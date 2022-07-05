@@ -73,7 +73,6 @@ class PrefectProvider(BaseProvider):
     )
     def get_flows(self, filters: Optional[Dict] = None) -> List[PrefectFlowResponse]:
         response = self.client.post(f"{self.uri}/flows/filter", json=filters or {})
-        print(response)
         return response
 
     @api_response_handler(
@@ -107,4 +106,11 @@ class PrefectProvider(BaseProvider):
     )
     def get_flow_run_details(self, flow_run_id: str) -> List[FlowRunResponse]:
         response = self.client.get(f"{self.uri}/flow_runs/{flow_run_id}")
+        return response
+
+    @api_response_handler(
+        message=f"Prefect does not answer on Healthcheck. Looks like Prefect server is unavailable on address {cfg.PREFECT_URI}",
+    )
+    def healthcheck(self) -> str:
+        response = self.client.get(f"{self.uri}/hello")
         return response

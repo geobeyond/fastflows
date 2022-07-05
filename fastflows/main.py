@@ -21,6 +21,7 @@ from fastapi_opa import OPAMiddleware
 from mangum import Mangum
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.middleware.cors import CORSMiddleware
+from fastflows.providers import provider
 
 
 class FastFlowsAPI(FastAPI):
@@ -70,6 +71,7 @@ app = create_app()
 
 @app.on_event("startup")
 async def startup_event():
+    provider.healthcheck()
     # todo: improve to avoid re-deploying each time when server up & run
     if cfg.FASTFLOWS_AUTO_DEPLOYMENT == 1:
         logging.info("Register Flows in Prefect")

@@ -48,7 +48,6 @@ def run_flow(
     """run flow by name or id"""
     flow_id = get_flow_id(flow_name, by_id)
     flow = get_flow_by_id(flow_id)
-    print(flow)
     if flow:
         return provider.run_flow(
             deployment_id=flow.deployment_id,

@@ -5,22 +5,22 @@
 version: "3.9"
 
 services:
-  fastflows:
-    build:
-      context: ../
-      dockerfile: ./docker/Dockerfile
-    ports:
-      - ${FASTFLOWS_PORT}:${FASTFLOWS_PORT}
-    volumes:
-      - .:/app/src
-      - ../flows:/app/flows
-    image: fastflows
-    # restart: always
-    env_file:
-      - .env
-    depends_on:
-      - prefect
-      - db
+  #fastflows:
+  #build:
+  #context: ../
+  #dockerfile: ./docker/Dockerfile
+  #ports:
+  #- ${FASTFLOWS_PORT}:${FASTFLOWS_PORT}
+  #volumes:
+  #- .:/app/src
+  #- ../flows:/app/flows
+  #image: fastflows
+  # restart: always
+  #env_file:
+  #  - .env
+  #depends_on:
+  #  - prefect
+  #  - db
   prefect:
     image: prefecthq/prefect:2.0b6-python3.10
     entrypoint: prefect orion start --host 0.0.0.0
