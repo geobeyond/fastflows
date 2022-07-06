@@ -1,3 +1,4 @@
+import os
 from fastflows.config.app import configuration as cfg
 from ast import literal_eval
 
@@ -9,7 +10,13 @@ class CatalogCache:
     def __init__(self):
         self.data = self.read()
 
+    def check_or_create_home_folder(self) -> None:
+
+        if not os.path.exists(cfg.FLOWS_HOME):
+            os.makedirs(cfg.FLOWS_HOME, exist_ok=True)
+
     def read(self) -> None:
+        self.check_or_create_home_folder()
         try:
             with open(cfg.FASTFLOWS_CATALOG_CACHE, "r") as f:
                 raw_data = f.read()
