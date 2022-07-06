@@ -1,18 +1,10 @@
 import pytest
 from typer.testing import CliRunner
-
-from fastflows.cli import app
-from fastflows.core.catalog import Catalog
-from fastflows.config import app as cfg
-
-runner = CliRunner()
-
-cfg.configuration.FASTFLOW_DEBUG = 1
-flows_home_path = "tests/test_data/flows"
-Catalog().set_flows_path(flows_home_path)
+from tests.integration.cli.conftest import flows_home_path, app
 
 
-def test_flows_not_existed_flow():
+# todo: need to mock prefect to run it on CI
+def test_flows_not_existed_flow(runner: CliRunner):
     result = runner.invoke(app, 'flows deploy --flow-name "simple"'.split())
     assert result.exit_code == 1
     assert (
@@ -20,7 +12,7 @@ def test_flows_not_existed_flow():
     )
 
 
-def test_flows_existed_flow():
+def test_flows_existed_flow(runner: CliRunner):
     result = runner.invoke(
         app, ["flows", "deploy", flows_home_path, "--flow-name", "Simple Flow2"]
     )
@@ -31,7 +23,7 @@ def test_flows_existed_flow():
     )
 
 
-def test_flows_existed_flow_path():
+def test_flows_existed_flow_path(runner: CliRunner):
     result = runner.invoke(
         app,
         ["flows", "deploy", "--flow-path", "tests/test_data/flows/flow_with_params.py"],
@@ -43,7 +35,7 @@ def test_flows_existed_flow_path():
     )
 
 
-def test_flows_existed_flow_path_with_flow_name_err():
+def test_flows_existed_flow_path_with_flow_name_err(runner: CliRunner):
     result = runner.invoke(
         app,
         [
@@ -62,7 +54,7 @@ def test_flows_existed_flow_path_with_flow_name_err():
     )
 
 
-def test_flows_existed_flow_path_with_flow_name():
+def test_flows_existed_flow_path_with_flow_name(runner: CliRunner):
     result = runner.invoke(
         app,
         [
@@ -82,7 +74,7 @@ def test_flows_existed_flow_path_with_flow_name():
 
 
 @pytest.mark.skip(reason="fix later")
-def test_flows_existed_flow_path_with_flow_name_wrong_params_format():
+def test_flows_existed_flow_path_with_flow_name_wrong_params_format(runner: CliRunner):
     result = runner.invoke(
         app,
         [
@@ -99,3 +91,7 @@ def test_flows_existed_flow_path_with_flow_name_wrong_params_format():
         "Deploy flow 'Pipeline with Parameter' from path: tests/test_data/flows/flow_with_params.py"
         in result.stdout
     )
+
+
+def test_create_flow_run(run_flow: str) -> None:
+    assert run_flow is not None

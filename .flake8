@@ -5,5 +5,12 @@ max-line-length = 120
 max-complexity = 10
 docstring-convention = google
 per-file-ignores = tests/*:S101
+exclude=
+    .nox/
+    .venv/
+    .pytest_cache/
+    .dist/
+    docker/
+    __pycache__/
 rst-roles = class,const,func,meth,mod,ref
 rst-directives = deprecated
