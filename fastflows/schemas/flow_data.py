@@ -42,7 +42,9 @@ class FlowDataFromFile(BaseFlowData):
     deployment_name: Optional[str]
 
     @root_validator(pre=True)
-    def generate_deployment_name(cls, values: dict) -> dict:
+    def _generate_deployment_name(
+        cls, values: dict  # noqa: N805,B902 because of Pydantic
+    ) -> dict:
         values["deployment_name"] = get_hash_from_data(values["flow_data"].blob)
         return values
 

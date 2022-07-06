@@ -91,17 +91,17 @@ def precommit(session: NoxPoetrySession) -> None:
     args = session.posargs or ["run", "--all-files", "--show-diff-on-failure"]
     session.install(
         "black",
-        "darglint",
+        # "darglint",
         "flake8",
-        "flake8-bandit",
-        "flake8-bugbear",
-        "flake8-docstrings",
-        "flake8-rst-docstrings",
-        "pep8-naming",
+        # "flake8-bandit",
+        # "flake8-bugbear",
+        # "flake8-docstrings",
+        # "flake8-rst-docstrings",
+        # "pep8-naming",
         "pre-commit",
         "pre-commit-hooks",
-        "pyupgrade",
-        "reorder-python-imports",
+        # "pyupgrade",
+        # "reorder-python-imports",
     )
     session.run("pre-commit", "clean")
     session.run("pre-commit", *args)
@@ -135,10 +135,6 @@ def tests(session: NoxPoetrySession) -> None:
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run(
-            "coverage",
-            "run",
-            "--parallel",
-            "-m",
             "pytest",
             "tests/unit",
             *session.posargs,
