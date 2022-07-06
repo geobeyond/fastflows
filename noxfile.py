@@ -135,6 +135,10 @@ def tests(session: NoxPoetrySession) -> None:
     session.install("coverage[toml]", "pytest", "pygments")
     try:
         session.run(
+            "coverage",
+            "run",
+            "--parallel",
+            "-m",
             "pytest",
             "tests/unit",
             *session.posargs,
