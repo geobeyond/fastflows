@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastflows.schemas.flow_run import FlowRunState
+from fastflows.schemas.flow_run import FlowRunState, StateBase
 from fastflows.core.flow_run import (
     update_flow_run_state,
     get_flow_run_details,
@@ -17,9 +17,7 @@ async def get_flow_run_details_route(flow_run_id: str):
 
 
 @router.patch("/{flow_run_id}", response_model=FlowRunState)
-async def update_flow_run_status_route(
-    flow_run_id: str,
-):
+async def update_flow_run_status_route(flow_run_id: str, state: StateBase):
     """
     :param flow_run_id: Flow Run Id in Prefect to update
 

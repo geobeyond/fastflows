@@ -7,7 +7,7 @@ import traceback
 from typing import Optional
 from fastflows.config.app import configuration
 from fastflows.schemas.flow import FlowDeployInput
-from fastflows.schemas.flow_run import FlowRunInput
+from fastflows.schemas.flow_run import FlowRunInput, StateBase, FlowRunStateEnum
 from fastflows.schemas.deployment import DeploymentInputParams
 from fastflows.main import app_run
 from fastflows.core.flow_run import (
@@ -83,9 +83,15 @@ def flow_run_state(flow_run_id: str):
 
 @flow_runs.command(name="update", help="Update flow run state by flow_run_id")
 @catch_exceptions
-def update_flow_run(flow_run_id: str):
-    typer.echo(f"Get state for flow_run_id {flow_run_id}")
-    result = update_flow_run_state(flow_run_id)
+def update_flow_run(
+    flow_run_id: str,
+    state: str = typer.Option(
+        FlowRunStateEnum.CANCELLED.value,
+        help="State to set for new flow run - by default 'Scheduled' (mean will be runned imidiatly)",
+    ),
+):
+    typer.echo(f"Set state {state} for flow_run_id {flow_run_id}")
+    result = update_flow_run_state(flow_run_id, state=StateBase(type=state))
     typer.echo(result)
 
 
@@ -126,6 +132,8 @@ def run(
         by_id=flow_id,
         flow_run_input=FlowRunInput(state={"type": state}, parameters=parameters),
     )
+    typer.echo(f"Created flow run with id: {result.id}\n")
+    typer.echo("Details:")
     rprint(result)
 
 

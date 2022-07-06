@@ -1,6 +1,7 @@
 import datetime
 from pydantic import BaseModel
-
+from typing import Optional
+from enum import Enum
 import hashlib
 
 
@@ -17,3 +18,13 @@ class Schedule(BaseModel):
 
 def get_hash_from_data(data: str) -> str:
     return hashlib.md5(data.encode()).hexdigest()
+
+
+class Status(str, Enum):
+    ACCEPT = "ACCEPT"
+    ABORT = "ABORT"
+
+
+class Details(BaseModel):
+    type: str
+    reason: Optional[str]

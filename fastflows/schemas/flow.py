@@ -7,8 +7,6 @@ from fastflows.config.app import configuration as cfg
 
 
 # before prefect call
-
-
 class FlowDeployInput(BaseModel):
     """REST Create flow Input model"""
 

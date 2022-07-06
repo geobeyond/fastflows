@@ -55,7 +55,6 @@ def test_flows_existed_flow_path_with_flow_name_err():
             "Simple Flow2",
         ],
     )
-    print(result.stdout)
     assert result.exit_code == 1
     assert (
         "Flow with name 'Simple Flow2' was not found in path 'tests/test_data/flows/flow_with_params.py'"
@@ -75,7 +74,6 @@ def test_flows_existed_flow_path_with_flow_name():
             "Pipeline with Parameter",
         ],
     )
-    print(result.stdout)
     assert result.exit_code == 0
     assert (
         "Deploy flow 'Pipeline with Parameter' from path: tests/test_data/flows/flow_with_params.py"
@@ -96,7 +94,6 @@ def test_flows_existed_flow_path_with_flow_name_wrong_params_format():
             "Pipeline with Parameter",
         ],
     )
-    print(result.stdout)
     assert result.exit_code == 1
     assert (
         "Deploy flow 'Pipeline with Parameter' from path: tests/test_data/flows/flow_with_params.py"

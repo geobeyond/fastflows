@@ -5,7 +5,12 @@ from fastflows.schemas.deployment import DeploymentSpec, DeploymentResponse
 from fastflows.schemas.flow import PrefectFlowResponse
 from fastflows.schemas.flow_data import BaseFlowData
 from fastflows.providers.utils import api_response_handler
-from fastflows.schemas.flow_run import FlowRunResponse, InitFlowRun
+from fastflows.schemas.flow_run import (
+    FlowRunResponse,
+    InitFlowRun,
+    StateBase,
+    UpdateStateResponse,
+)
 from typing import List, Optional, Dict
 
 
@@ -113,4 +118,16 @@ class PrefectProvider(BaseProvider):
     )
     def healthcheck(self) -> str:
         response = self.client.get(f"{self.uri}/hello")
+        return response
+
+    @api_response_handler(
+        message="Error while updating FlowRun state.",
+    )
+    def update_flow_run_state(
+        self, flow_run_id: str, state: StateBase
+    ) -> UpdateStateResponse:
+        response = self.client.post(
+            f"{self.uri}/flow_runs/{flow_run_id}/set_state",
+            json={"state": state.dict()},
+        )
         return response

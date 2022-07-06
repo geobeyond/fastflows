@@ -3,6 +3,7 @@ from enum import Enum
 from pydantic import BaseModel, Field
 from typing import Optional, List
 from fastflows.schemas.deployment import FlowRunner
+from fastflows.schemas.misc import Status, Details
 
 
 class FlowRunStateEnum(str, Enum):
@@ -86,3 +87,10 @@ class InitFlowRun(BaseModel):
     tags: Optional[list] = Field(default_factory=list)
     flow_runner: Optional[FlowRunner]
     state: Optional[StateBase]
+
+
+class UpdateStateResponse(BaseModel):
+    # can be null if 'ABORT' status
+    state: Optional[State]
+    status: Status
+    details: Details
