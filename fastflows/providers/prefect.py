@@ -35,10 +35,10 @@ class PrefectProvider(BaseProvider):
 
     @api_response_handler(...)
     def approve_task(self, flow_run_id: str) -> None:
-        """https://orion-docs.prefect.io/api-ref/rest-api/#/Task%20Runs/set_task_run_state_task_runs__id__set_state_post"""
-
-        response = self.client.post(f"{self.uri}/flow_run_states/{flow_run_id}")
-        return response
+        """need to implement manual_approve state firstly in Prefect"""
+        # response = self.client.post(f"{self.uri}/flow_run_states/{flow_run_id}")
+        # return response
+        raise NotImplementedError()
 
     @api_response_handler(
         message="Error while deploying flow. Description:",
