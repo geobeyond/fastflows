@@ -1,0 +1,12 @@
+{
+  "_template": "gh:cjolowicz/cookiecutter-hypermodern-python",
+  "author": "Francesco Bartoli",
+  "development_status": "Development Status :: 1 - Planning",
+  "email": "francesco.bartoli@geobeyond.it",
+  "friendly_name": "fastflows",
+  "github_user": "geobeyond",
+  "license": "MIT",
+  "package_name": "fastflows",
+  "project_name": "fastflows",
+  "version": "0.0.0"
+}

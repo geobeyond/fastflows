@@ -1,0 +1,17 @@
+[flake8]
+select = B,B9,C,D,DAR,E,F,N,RST,S,W
+# temporary ignore those codes
+ignore = E203,E501,RST201,RST203,RST301,DAR101,D103,DAR201,W503,D101,D100
+max-line-length = 120
+max-complexity = 10
+docstring-convention = google
+per-file-ignores = tests/*:S101
+exclude=
+    .nox/
+    .venv/
+    .pytest_cache/
+    .dist/
+    docker/
+    __pycache__/
+rst-roles = class,const,func,meth,mod,ref
+rst-directives = deprecated
