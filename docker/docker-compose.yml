@@ -34,7 +34,7 @@ services:
     entrypoint: prefect work-queue create base-queue
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
-    # restart: on-failure
+    restart: on-failure
     depends_on:
       - prefect
       - db

@@ -20,6 +20,7 @@ def test_flow_run_by_id(flow_run: FlowRunResponse) -> None:
 
 
 def test_flow_run_by_name(create_flow: Flow, client: TestClient) -> None:
+    print(create_flow.name)
     response = client.post(f"/flows/name/{create_flow.name}")
     response_body = response.json()
     assert response.status_code == 200

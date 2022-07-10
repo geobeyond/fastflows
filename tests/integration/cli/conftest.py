@@ -1,7 +1,7 @@
 import pytest
 from typer.testing import CliRunner
 
-from fastflows.cli import app
+from fastflows.cli.main import app
 from fastflows.core.catalog import Catalog
 from fastflows.config import app as cfg
 

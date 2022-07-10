@@ -170,7 +170,7 @@ class Catalog(metaclass=Singleton):
 
         # get flows from Prefect
         self.compare_cache_with_prefect()
-
+        
         flows_updated = False
 
         flows_in_folder = self._get_flows_from_path(flow_input)
@@ -179,10 +179,6 @@ class Catalog(metaclass=Singleton):
             flows_in_folder: List[FlowDataFromFile] = self._filter_flows_by_name(
                 flows_in_folder, flow_input.flow_name, flow_input.flow_path
             )
-
-        if not flow_input.flow_path:
-            # sync .fastflows cache with current state of FLOWS_HOME
-            self._clean_up_catalog_cache(flows_in_folder)
 
         flows_deployed = []
 
