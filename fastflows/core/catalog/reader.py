@@ -1,7 +1,6 @@
 import ast
 import os
 import sys
-import pydantic
 from fastflows.schemas.flow_data import (
     FlowDataFromFile,
     ScheduleFromFile,
@@ -11,7 +10,7 @@ from fastflows.schemas.flow_data import (
 )
 from typing import List, Optional, Tuple
 from fastflows.config.app import configuration as cfg
-from fastflows.errors import FastFlowException
+from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
 
 
 class FlowFileReader:
@@ -49,20 +48,8 @@ class FlowFileReader:
         key = cfg.SCHEDULE_PROPERTY
         for num, line in self._get_data_from_comment(key):
             if line:
-                data = [item.strip() for item in line.split(",")]
-                schedule_data = {}
-                for item in data:
-                    item = item.split("=")
-                    if item[0] in ScheduleFromFile.__fields__:
-                        schedule_data[item[0]] = item[1]
-                try:
-                    schedules.append(ScheduleFromFile(lineno=num, **schedule_data))
-                except pydantic.error_wrappers.ValidationError:
-                    raise FastFlowException(
-                        "Wrong schedule format."
-                        "Schedule in Flow File should be defined as comment line with interval & anchor_date & timezone"
-                        "Example: `# schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC`"
-                    )
+                schedule = parse_schedule_line(line)
+                schedules.append(ScheduleFromFile(lineno=num, **schedule.dict()))
 
         return schedules
 
@@ -71,10 +58,9 @@ class FlowFileReader:
         exctracted_tags = []
         key = cfg.TAGS_PROPERTY
         for num, line in self._get_data_from_comment(key):
-            if line:
-                tags = [item.strip() for item in line.split(",")]
-                if tags:
-                    exctracted_tags.append(TagsFromFile(lineno=num, tags=tags))
+            tags = parse_tags_line(line)
+            if tags:
+                exctracted_tags.append(TagsFromFile(lineno=num, tags=tags))
         return exctracted_tags
 
     def _get_information_from_file(self) -> None:
