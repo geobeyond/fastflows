@@ -4,11 +4,13 @@ from fastflows.core.flow_run import (
     update_flow_run_state,
     get_flow_run_details,
 )
+from fastflows.routers import handle_rest_errors
 
 router = APIRouter(prefix="/flow-runs", tags=["flows"])
 
 
 @router.get("/{flow_run_id}", response_model=FlowRunState)
+@handle_rest_errors
 async def get_flow_run_details_route(flow_run_id: str):
     """
     :param flow_run_id: Flow Run Id in Prefect to get info about
@@ -17,6 +19,7 @@ async def get_flow_run_details_route(flow_run_id: str):
 
 
 @router.patch("/{flow_run_id}/state", response_model=UpdateStateResponse)
+@handle_rest_errors
 async def update_flow_run_state_route(
     flow_run_id: str, state: StateBase
 ) -> UpdateStateResponse:
