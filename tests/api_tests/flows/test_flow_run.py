@@ -20,7 +20,6 @@ def test_flow_run_by_id(flow_run: FlowRunResponse) -> None:
 
 
 def test_flow_run_by_name(create_flow: Flow, client: TestClient) -> None:
-    print(create_flow.name)
     response = client.post(f"/flows/name/{create_flow.name}")
     response_body = response.json()
     assert response.status_code == 200
@@ -34,5 +33,26 @@ def test_update_flow_run_state(flow_run: FlowRunResponse, client: TestClient) ->
         f"/flow-runs/{flow_run.id}/state", json={"type": "CANCELLED"}
     )
     response_body = response.json()
-    print(response_body)
     assert response.status_code == 200
+    assert response_body["status"] == "ACCEPT"
+
+
+def test_flow_run_by_id_not_exists(client: TestClient) -> None:
+    response = client.post("/flows/any-id-not-exists")
+    response_body = response.json()
+    assert response.status_code == 404
+    assert "Flow was not found in Catalog. Available flows" in response_body["detail"]
+
+
+def test_flow_run_by_name_not_exists(client: TestClient) -> None:
+    response = client.post("/flows/name/any-id-not-exists")
+    response_body = response.json()
+    assert response.status_code == 404
+    assert "Flow was not found in Catalog. Available flows" in response_body["detail"]
+
+
+def test_update_flow_run_state_422(client: TestClient) -> None:
+    response = client.patch("/flow-runs/not-id/state", json={"type": "CANCELLED"})
+    response_body = response.json()
+    assert response.status_code == 422
+    assert "value is not a valid uui" in response_body["detail"]

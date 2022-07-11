@@ -19,6 +19,7 @@ async def create_flow_deployment(
 
 
 @router.post("/{flow_id}")
+@handle_rest_errors
 async def init_flow_run(
     flow_id: str, flow_run_input: Optional[FlowRunInput] = FlowRunInput()
 ) -> Flow:
@@ -29,6 +30,7 @@ async def init_flow_run(
 
 
 @router.post("/name/{flow_name}")
+@handle_rest_errors
 async def init_flow_run_by_name(
     flow_name: str, flow_run_input: Optional[FlowRunInput] = FlowRunInput()
 ) -> Flow:
@@ -39,11 +41,13 @@ async def init_flow_run_by_name(
 
 
 @router.get("")
+@handle_rest_errors
 async def list_all_registered_flows_in_fast_flows():
     return list_flows()
 
 
 @router.get("/{flow_id}/flow_runs")
+@handle_rest_errors
 async def list_all_flow_runs_by_flow_id(flow_id: str):
     """
     :param flow_id: Flow id in Prefect to run
@@ -52,6 +56,7 @@ async def list_all_flow_runs_by_flow_id(flow_id: str):
 
 
 @router.post("/name/{flow_name}/flow_runs")
+@handle_rest_errors
 async def list_all_flow_runs_by_flow_name(flow_name: str):
     """
     :param flow_name: Flow id in Prefect to run

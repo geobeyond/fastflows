@@ -1,4 +1,3 @@
-import logging
 from typing import Optional, _GenericAlias, Callable
 from pydantic import BaseModel
 import fastflows
@@ -34,37 +33,26 @@ def api_response_handler(
         _response_model = get_response_model(func, response_model)
 
         def wrapper(*args, **kwargs):
-            try:
-                response = func(*args, **kwargs)
-                status_code_check = str(response.status_code).startswith
-                if status_code_check("2"):
-                    response = response.json()
-                    if _response_model:
-                        if isinstance(response, list):
-                            processed_response = []
-                            for item in response:
-                                processed_response.append(_response_model(**item))
-                        else:
-                            processed_response = _response_model(**response)
-                        return processed_response
+            response = func(*args, **kwargs)
+            status_code_check = str(response.status_code).startswith
+            if status_code_check("2"):
+                response = response.json()
+                if _response_model:
+                    if isinstance(response, list):
+                        processed_response = []
+                        for item in response:
+                            processed_response.append(_response_model(**item))
                     else:
-                        return response
+                        processed_response = _response_model(**response)
+                    return processed_response
                 else:
-                    raise fastflows.errors.FastFlowException(
-                        f"Error API response: {response.text}. Status code: {response.status_code}"
-                    )
-            except Exception as e:
-
-                logging.error(e)
-
-                err_msg = (
-                    message.format(args[1:] if len(args) > 1 else kwargs)
-                    if args_in_message
-                    else message
+                    return response
+            else:
+                if response.status_code == 422:
+                    raise errors.ApiValidationError(response.json())
+                raise fastflows.errors.FastFlowException(
+                    f"Error API response: {response.text}. Status code: {response.status_code}"
                 )
-                if append_api_error:
-                    err_msg += f" {e.args[0]}"
-                raise errors.FastFlowException(err_msg)
 
         return wrapper
 
