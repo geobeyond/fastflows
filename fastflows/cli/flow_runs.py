@@ -1,6 +1,6 @@
 import typer
 import sys
-from fastflows.schemas.flow_run import StateBase
+from fastflows.schemas.flow_run import StateBase, FlowRunStateEnum
 from rich import print as rprint
 from fastflows.core.flow_run import (
     update_flow_run_state,
@@ -25,7 +25,7 @@ def list_flow_runs(
         f"Get list flow runs for flow {'with name' if not flow_id else 'with id'}: {flow_name}"
     )
     result = get_flow_runs_list(flow_name, flow_id)
-    typer.echo(result)
+    rprint(result)
 
 
 @flow_runs.command(name="details", help="Get details for flow_run_id")
@@ -33,6 +33,16 @@ def list_flow_runs(
 def flow_run_state(flow_run_id: str):
     typer.echo(f"Get flow run state for flow_run_id {flow_run_id}")
     result = get_flow_run_details(flow_run_id)
+    rprint(result)
+
+
+@flow_runs.command(name="cancel", help="Cancel flow run by flow_run_id")
+@catch_exceptions
+def cancel_flow_run(flow_run_id: str):
+    typer.echo(f"Cancel flow run with flow_run_id {flow_run_id}")
+    result = update_flow_run_state(
+        flow_run_id, state=StateBase(type=FlowRunStateEnum.CANCELLED.value)
+    )
     rprint(result)
 
 
@@ -54,4 +64,4 @@ def update_flow_run(
         sys.exit(1)
     typer.echo(f"Set state {state} for flow_run_id {flow_run_id}")
     result = update_flow_run_state(flow_run_id, state=StateBase(type=state))
-    typer.echo(result)
+    rprint(result)

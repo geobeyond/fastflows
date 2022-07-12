@@ -20,3 +20,12 @@ def test_change_state_flow_run_ok(runner: CliRunner, run_flow: Flow):
     assert result.exit_code == 0
     assert "Set state CANCELLED for flow_run_id" in result.stdout
     assert "status=<Status.ACCEPT: 'ACCEPT'>" in result.stdout
+
+
+def test_cancel_flow_run(runner: CliRunner, run_flow: Flow):
+    result = runner.invoke(
+        app,
+        ["flow-runs", "cancel", run_flow],
+    )
+    assert result.exit_code == 0
+    assert "Cancel flow run with flow_run_id " in result.stdout
