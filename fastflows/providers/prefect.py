@@ -10,6 +10,7 @@ from fastflows.schemas.flow_run import (
     InitFlowRun,
     StateBase,
     UpdateStateResponse,
+    FlowRunResponseGraph,
 )
 from typing import List, Optional, Dict
 
@@ -111,6 +112,15 @@ class PrefectProvider(BaseProvider):
     )
     def get_flow_run_details(self, flow_run_id: str) -> List[FlowRunResponse]:
         response = self.client.get(f"{self.uri}/flow_runs/{flow_run_id}")
+        return response
+
+    @api_response_handler(
+        message="Error while getting FlowRun graph.",
+        append_api_error=True,
+        response_model=List[FlowRunResponseGraph],
+    )
+    def get_flow_run_graph(self, flow_run_id: str) -> List[FlowRunResponseGraph]:
+        response = self.client.get(f"{self.uri}/flow_runs/{flow_run_id}/graph")
         return response
 
     @api_response_handler(

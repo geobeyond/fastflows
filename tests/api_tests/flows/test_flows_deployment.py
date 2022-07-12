@@ -88,8 +88,7 @@ def test_flow_deploy_all(client: TestClient) -> None:
     response = client.post("/flows", json={"force": True})
     response_body = response.json()
     assert response.status_code == 200
-    assert len(response_body) == 2
-    assert [flow["name"] for flow in response_body] == [
-        "Params Flow",
-        "Simple Flow2",
-    ]
+    assert len(response_body) == 4
+    assert sorted([flow["name"] for flow in response_body]) == sorted(
+        ["Params Flow", "Subflow", "With Subflow", "Simple Flow2"]
+    )

@@ -172,7 +172,7 @@ class Catalog(metaclass=Singleton):
         self.compare_cache_with_prefect()
 
         flows_updated = False
-        print(flow_input)
+
         flows_in_folder = self._get_flows_from_path(flow_input)
 
         if flow_input.flow_name:

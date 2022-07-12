@@ -30,9 +30,16 @@ def list_flow_runs(
 
 @flow_runs.command(name="details", help="Get details for flow_run_id")
 @catch_exceptions
-def flow_run_state(flow_run_id: str):
-    typer.echo(f"Get flow run state for flow_run_id {flow_run_id}")
-    result = get_flow_run_details(flow_run_id)
+def flow_run_state(
+    flow_run_id: str,
+    graph: bool = typer.Option(False, help="Get graph for flow_run_id"),
+):
+    if graph:
+        message = "Get graph for flow_run_id"
+    else:
+        message = "Get details for flow_run_id"
+    typer.echo(f"{message} {flow_run_id}")
+    result = get_flow_run_details(flow_run_id, graph)
     rprint(result)
 
 

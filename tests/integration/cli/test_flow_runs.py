@@ -29,3 +29,14 @@ def test_cancel_flow_run(runner: CliRunner, run_flow: Flow):
     )
     assert result.exit_code == 0
     assert "Cancel flow run with flow_run_id " in result.stdout
+
+
+def test_flow_run_with_sub_flow_and_graph_option(
+    runner: CliRunner, run_flow_with_subflow: Flow
+):
+    result = runner.invoke(
+        app,
+        ["flow-runs", "details", run_flow_with_subflow, "--graph"],
+    )
+    assert result.exit_code == 0
+    assert "Get graph for flow_run_id" in result.stdout

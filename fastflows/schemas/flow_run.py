@@ -104,3 +104,13 @@ class UpdateStateResponse(BaseModel):
     state: Optional[State]
     status: Status
     details: Details
+
+
+class FlowRunResponseGraph(FlowRunState):
+    upstream_dependencies: List[Union[str, dict]]
+    state_details: Optional[StateDetails]
+    expected_start_time: datetime.datetime
+    start_time: datetime.datetime
+    end_time: datetime.datetime
+    total_run_time: int
+    estimated_run_time: int

@@ -27,3 +27,14 @@ def run_flow(runner: CliRunner):
     assert result.exit_code == 0
     assert "Created flow run with id:" in result.stdout
     return result.stdout.split("id='")[1].split("'")[0]
+
+
+@pytest.fixture
+def run_flow_with_subflow(runner: CliRunner):
+    result = runner.invoke(
+        app,
+        ["flows", "run", "With Subflow", "--params", "name=name"],
+    )
+    assert result.exit_code == 0
+    assert "Created flow run with id:" in result.stdout
+    return result.stdout.split("id='")[1].split("'")[0]
