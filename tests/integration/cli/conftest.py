@@ -25,5 +25,5 @@ def run_flow(runner: CliRunner):
         ["flows", "run", "Simple Flow2"],
     )
     assert result.exit_code == 0
-    assert "Run flow: Simple Flow2\nCreated flow run with id:" in result.stdout
+    assert "Created flow run with id:" in result.stdout
     return result.stdout.split("id='")[1].split("'")[0]

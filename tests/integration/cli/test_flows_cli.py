@@ -95,3 +95,12 @@ def test_flows_existed_flow_path_with_flow_name_wrong_params_format(runner: CliR
 
 def test_create_flow_run(run_flow: str) -> None:
     assert run_flow is not None
+
+
+def test_flows_list(runner: CliRunner):
+    result = runner.invoke(
+        app,
+        ["flows", "list"],
+    )
+    assert result.exit_code == 0
+    assert "Available flows: " in result.stdout
