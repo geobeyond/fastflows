@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from fastflows.schemas.flow import Flow, FlowDeployInput
 from fastflows.schemas.flow_run import FlowRunResponse, FlowRunInput
 from fastflows.errors import FlowNotFound
@@ -63,14 +63,10 @@ def get_flow_runs_list(flow_name: str, by_id: bool) -> List[FlowRunResponse]:
     return provider.list_flow_runs(flow_id)
 
 
-def list_flows():
-    # flows that already was registered in Prefect
-    return catalog
-
-
-def list_flows_from_file_home(flow_path: str) -> List[Flow]:
+def list_flows(flow_path: Optional[str]) -> List[Flow]:
     # they cannot be registered in Prefect, just list from FLOWS_HOME
-    return list(Catalog(flow_path).process_flows())
+    Catalog(flow_path).register_and_deploy()
+    return list(catalog.keys())
 
 
 def deploy_flows(

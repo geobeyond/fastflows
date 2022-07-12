@@ -56,3 +56,21 @@ def test_update_flow_run_state_422(client: TestClient) -> None:
     response_body = response.json()
     assert response.status_code == 422
     assert "value is not a valid uui" in response_body["detail"]
+
+
+def test_flow_run_by_name_with_params(client: TestClient) -> None:
+    response = client.post(
+        "/flows/name/Params Flow", json={"parameters": {"name": "value1"}}
+    )
+    response_body = response.json()
+    assert response.status_code == 200
+    assert response_body["id"]
+    assert response_body["parameters"] == {"name": "value1"}
+
+
+def test_get_flow_run_graph(flow_run: FlowRunResponse, client: TestClient) -> None:
+    response = client.get(f"/flow-runs/{flow_run.id}/graph")
+    response_body = response.json()
+    assert response.status_code == 200
+    # need to wait to complete flow for graph to be generated
+    assert response_body == []

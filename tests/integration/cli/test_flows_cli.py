@@ -63,12 +63,12 @@ def test_flows_existed_flow_path_with_flow_name(runner: CliRunner):
             "--flow-path",
             "tests/test_data/flows/flow_with_params.py",
             "--flow-name",
-            "Pipeline with Parameter",
+            "Params Flow",
         ],
     )
     assert result.exit_code == 0
     assert (
-        "Deploy flow 'Pipeline with Parameter' from path: tests/test_data/flows/flow_with_params.py"
+        "Deploy flow 'Params Flow' from path: tests/test_data/flows/flow_with_params.py"
         in result.stdout
     )
 
@@ -95,3 +95,27 @@ def test_flows_existed_flow_path_with_flow_name_wrong_params_format(runner: CliR
 
 def test_create_flow_run(run_flow: str) -> None:
     assert run_flow is not None
+
+
+def test_flows_list(runner: CliRunner):
+    result = runner.invoke(
+        app,
+        ["flows", "list"],
+    )
+    assert result.exit_code == 0
+    assert "Available flows: " in result.stdout
+
+
+def test_flows_run_with_params(runner: CliRunner):
+    result = runner.invoke(
+        app,
+        [
+            "flows",
+            "run",
+            "Params Flow",
+            "--params",
+            '{"name": "some-name-from-params"}',
+        ],
+    )
+    assert result.exit_code == 0
+    assert "parameters={'name': 'some-name-from-params'}" in result.stdout

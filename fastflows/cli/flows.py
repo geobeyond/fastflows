@@ -8,7 +8,7 @@ from fastflows.schemas.flow import FlowDeployInput
 from fastflows.schemas.flow_run import FlowRunInput
 from fastflows.schemas.deployment import DeploymentInputParams
 from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
-from fastflows.core.flow import run_flow, list_flows_from_file_home, deploy_flows
+from fastflows.core.flow import run_flow, list_flows, deploy_flows
 from fastflows.cli.utils import (
     catch_exceptions,
     process_params_from_str,
@@ -54,9 +54,7 @@ def run(
 def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
     """List all flows from FLOWS_HOME"""
     typer.echo("\nAll flows from FLOWS_HOME: \n")
-    for flow in list_flows_from_file_home(flow_path):
-        typer.echo(flow)
-    typer.echo("\n")
+    typer.echo(f"\nAvailable flows: {list_flows(flow_path)}\n")
 
 
 @flows_app.command()
