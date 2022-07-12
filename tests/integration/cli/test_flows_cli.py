@@ -63,12 +63,12 @@ def test_flows_existed_flow_path_with_flow_name(runner: CliRunner):
             "--flow-path",
             "tests/test_data/flows/flow_with_params.py",
             "--flow-name",
-            "Pipeline with Parameter",
+            "Params Flow",
         ],
     )
     assert result.exit_code == 0
     assert (
-        "Deploy flow 'Pipeline with Parameter' from path: tests/test_data/flows/flow_with_params.py"
+        "Deploy flow 'Params Flow' from path: tests/test_data/flows/flow_with_params.py"
         in result.stdout
     )
 
