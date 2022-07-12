@@ -78,7 +78,7 @@ def test_flow_create_by_flow_path(client: TestClient) -> None:
     response = client.post("/flows", json=payload)
     response_body = response.json()[0]
     assert response.status_code == 200
-    assert response_body["name"] == "Pipeline with Parameter"
+    assert response_body["name"] == "Params Flow"
     assert response_body["id"]
     assert response_body["deployment_id"]
 
@@ -90,6 +90,6 @@ def test_flow_deploy_all(client: TestClient) -> None:
     assert response.status_code == 200
     assert len(response_body) == 2
     assert [flow["name"] for flow in response_body] == [
-        "Pipeline with Parameter",
+        "Params Flow",
         "Simple Flow2",
     ]

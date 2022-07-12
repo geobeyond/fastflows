@@ -104,3 +104,18 @@ def test_flows_list(runner: CliRunner):
     )
     assert result.exit_code == 0
     assert "Available flows: " in result.stdout
+
+
+def test_flows_run_with_params(runner: CliRunner):
+    result = runner.invoke(
+        app,
+        [
+            "flows",
+            "run",
+            "Params Flow",
+            "--params",
+            '{"name": "some-name-from-params"}',
+        ],
+    )
+    assert result.exit_code == 0
+    assert "parameters={'name': 'some-name-from-params'}" in result.stdout
