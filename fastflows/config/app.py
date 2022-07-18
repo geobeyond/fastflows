@@ -37,9 +37,9 @@ class Config(BaseSettings):
     LOG_FORMAT: str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> [id:{extra[request_id]}] - <level>{message}</level>"
 
     # uvicorn setting
-    HOST: str = "0.0.0.0"
+    FASTFLOWS_HOST: str = "0.0.0.0"
     FASTFLOWS_PORT: int = 5010
-    RELOAD: bool = True
+    RELOAD: bool = False
     ACCESS_LOG: bool = False
     ROOT_PATH: str = ""
 

@@ -1,6 +1,7 @@
 from typing import Optional, _GenericAlias, Callable
 from pydantic import BaseModel
 import fastflows
+import httpx
 from fastflows import errors
 from fastflows.schemas.misc import DefaultAPIResponseModel
 
@@ -33,7 +34,12 @@ def api_response_handler(
         _response_model = get_response_model(func, response_model)
 
         def wrapper(*args, **kwargs):
-            response = func(*args, **kwargs)
+            try:
+                response = func(*args, **kwargs)
+            except httpx.ConnectError as e:
+                raise fastflows.errors.FastFlowException(
+                    f"Problems with resolving Prefect host: {str(e)}."
+                )
             status_code_check = str(response.status_code).startswith
             if status_code_check("2"):
                 response = response.json()

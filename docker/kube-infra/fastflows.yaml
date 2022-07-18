@@ -1,0 +1,68 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastflows
+spec:
+  selector:
+    matchLabels:
+      app: fastflows
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: fastflows
+    spec:
+      containers:
+        - name: main
+          image: geobeyond/fastflows:latest
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5010
+          env:
+            - name: PREFECT_URI
+              value: http://orion:4200
+            - name: FASTFLOWS_PORT
+              value: "5010"
+          command: ["fastflows", "server"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastflows
+  labels:
+    app: fastflows
+spec:
+  ports:
+    - port: 5010
+      protocol: TCP
+  selector:
+    app: fastflows
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: flow-runner
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "pods/status"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flow-runner-role-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: Role
+  name: flow-runner
+  apiGroup: rbac.authorization.k8s.io

@@ -1,0 +1,7 @@
+.cookiecutter.json
+.pytest_cache/
+dist/
+.k3d/
+.github
+examples/
+tests/

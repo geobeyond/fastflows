@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orion-queue
+spec:
+  selector:
+    matchLabels:
+      app: orion-queue
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: orion-queue
+    spec:
+      initContainers:
+        - name: check-orion-is-ready
+          image: curlimages/curl
+          command:
+            [
+              "sh",
+              "-c",
+              'while [ `curl -fsS http://localhost:4200/" --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
+            ]
+      containers:
+        - name: orion-queue
+          image: prefecthq/prefect:2.0b8-python3.9
+          command: ["prefect", "work-queue", "create", "default-queue"]
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 4200
+          env:
+            - name: PREFECT_API_URL
+              value: http://orion:4200/api
