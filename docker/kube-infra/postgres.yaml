@@ -10,6 +10,7 @@ data:
   POSTGRES_DB: orion
   POSTGRES_USER: prefect_db
   POSTGRES_PASSWORD: 71ccca6076254c528a3b7b34d184459b
+  PGSSLMODE: require
 ---
 apiVersion: v1
 kind: PersistentVolume # Create PV

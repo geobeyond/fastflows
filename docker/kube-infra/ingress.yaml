@@ -1,18 +1,3 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: orion-api
-spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: PathPrefix(`/`)
-      services:
-        - kind: Service
-          name: orion
-          namespace: default
-          port: 4200
 ---
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
@@ -29,3 +14,19 @@ spec:
           name: fastflows
           namespace: default
           port: 5010
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: orion-api
+spec:
+  entryPoints:
+    - other
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/`)
+      services:
+        - kind: Service
+          name: orion
+          namespace: default
+          port: 4200

@@ -54,7 +54,7 @@ def run(
 def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
     """List all flows from FLOWS_HOME"""
     typer.echo("\nAll flows from FLOWS_HOME: \n")
-    typer.echo(f"\nAvailable flows: {list_flows(flow_path)}\n")
+    typer.echo(f"\nAvailable flows: {list_flows(flows_home_path=flow_path)}\n")
 
 
 @flows_app.command()

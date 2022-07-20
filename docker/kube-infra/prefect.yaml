@@ -57,8 +57,10 @@ metadata:
     app: orion
 spec:
   ports:
-    - port: 4200
+    - port: 80
+      targetPort: 4200
       protocol: TCP
+  type: LoadBalancer
   selector:
     app: orion
 ---

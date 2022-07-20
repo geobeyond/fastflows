@@ -44,7 +44,7 @@ To get possible run Fastflows in k3d locally you need to import image in cluster
 
 ```console
 
-    k3d cluster delete fastflows
+    k3d cluster delete fastflows-cluster
 
 ```
 
