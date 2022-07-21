@@ -12,6 +12,4 @@ COPY ./pyproject.toml /app
 
 RUN poetry install --no-dev
 
-EXPOSE 80
-
-CMD ["uvicorn", "fastflows.main:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["uvicorn", "fastflows.main:app", "--host", "0.0.0.0", "--port", "5010"]

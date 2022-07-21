@@ -40,7 +40,10 @@ spec:
             - containerPort: 4200
           env:
             - name: PREFECT_ORION_DATABASE_CONNECTION_URL
-              value: postgresql+asyncpg://prefect_db:71ccca6076254c528a3b7b34d184459b@postgres:5432/orion
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: POSTGRES_URI
         - name: agent
           image: prefecthq/prefect:2.0b8-python3.9
           command: ["prefect", "agent", "start", "kubernetes"]
@@ -57,10 +60,9 @@ metadata:
     app: orion
 spec:
   ports:
-    - port: 80
+    - port: 4200
       targetPort: 4200
       protocol: TCP
-  type: LoadBalancer
   selector:
     app: orion
 ---

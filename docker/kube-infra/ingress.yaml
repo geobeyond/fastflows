@@ -1,32 +1,28 @@
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: fastflows-api
+  name: fastflows-cluster
+  annotations:
+    kubernetes.io/ingress.class: nginx
 spec:
-  entryPoints:
-    - web
-  routes:
-    - kind: Rule
-      match: PathPrefix(`/`)
-      services:
-        - kind: Service
-          name: fastflows
-          namespace: default
-          port: 5010
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
-metadata:
-  name: orion-api
-spec:
-  entryPoints:
-    - other
-  routes:
-    - kind: Rule
-      match: PathPrefix(`/`)
-      services:
-        - kind: Service
-          name: orion
-          namespace: default
-          port: 4200
+  rules:
+    - host: prefect.geo
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: orion
+                port:
+                  number: 4200
+    - host: fastflows.geo
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fastflows
+                port:
+                  number: 5010

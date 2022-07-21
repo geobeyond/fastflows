@@ -1,4 +1,4 @@
-Run all commands from base source dir
+**Note:** Run all commands from base repo dir
 
 ### Build Fastflows Docker Image
 
@@ -12,31 +12,76 @@ Run all commands from base source dir
 
 Steps to run:
 
-1. Create dir '/etc/data/postgresql' it will be used to store persistent PostgreSQL data
+1. **(For local env only)** Install minikube (will be used to create & manage local cluster): https://minikube.sigs.k8s.io/docs/start/
 
-2. **(For local env only)** Install k3d.io (will be used as K8s local solution): https://k3d.io/v5.4.4/#installation
+2. Install kubectl if you don't have it - https://kubernetes.io/docs/tasks/tools/
 
-3. Install kubectl if you don't have it - https://kubernetes.io/docs/tasks/tools/
-
-4. Create k3d cluster with an image registry, minio (for remote storage), the prefect agent and api:
+3. **(For local env only)** Create kubernetes cluster:
 
 ```console
 
-    make kubes
+    minikube start
+
+    # Important!!!
+    # On MacOS to make Ingress work you should run minikube with hyperkit:
+
+    minikube start --driver=hyperkit
+
 
 ```
 
-P.S: If you will see error like 'Error from server (NotFound): customresourcedefinitions.apiextensions.k8s.io "ingressroutes.traefik.containo.us" not found' it is okay - just wait.
+4. **(For local env only)**
 
-4. (**For local run only**) Import fastflows image
-
-To get possible run Fastflows in k3d locally you need to import image in cluster (by default k3d cannot find images from local env)
+Enable Ingress & host resolving (full explanation here)
 
 ```console
 
-    k3d images import fastflows -c fastflows-cluster
+    minikube addons enable ingress
 
 ```
+
+Get minikube cluster ip
+
+```console
+
+    minikube ip
+
+```
+
+Add domains to /etc/hosts linked to minikube cluster ip.
+
+Add this to /etc/hosts file:
+
+```console
+
+    your-mini-kube-ip fastflows.geo
+    your-mini-kube-ip prefect.geo
+
+    # for example (where 192.168.64.2 - minikube ip):
+    # 192.168.64.2 fastflows.geo
+    # 192.168.64.2 prefect.geo
+
+```
+
+5. Apply Kube manifests to the cluster
+
+```console
+
+    kubectl apply -f docker/kube-infra
+
+```
+
+5. Check pods statuses & wait until all pods will not be in status "Running"
+
+```console
+
+    kubectl get pods
+
+```
+
+Now you can access service by links:
+
+http://fastflows.geo/ & http://prefect.geo/
 
 ### Tips
 
@@ -44,36 +89,6 @@ To get possible run Fastflows in k3d locally you need to import image in cluster
 
 ```console
 
-    k3d cluster delete fastflows-cluster
-
-```
-
-2. If you need to connect to PostgreSQL DB from localhose, first find host with
-
-```console
-
-    kubectl get svc
-
-```
-
-when use with information to connect wtih PgAdmin or psql
-
-3. If you cannot access from you local terminal Kube cluster & if you run command, for example: `kubectl get svc` see the error like:
-   'The connection to the server localhost:8080 was refused - did you specify the right host or port?'
-
-Then in your terminal that you use define path to cluster config like this:
-
-```console
-
-    export CLUSTER_NAME=fastflows-cluster
-    export KUBECONFIG=.k3d/kubeconfig-${CLUSTER_NAME}.yaml
-
-```
-
-4. To check pods status:
-
-```console
-
-    kubectl get pods
+    minikube delete
 
 ```
