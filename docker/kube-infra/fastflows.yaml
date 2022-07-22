@@ -1,0 +1,93 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastflows
+spec:
+  selector:
+    matchLabels:
+      app: fastflows
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: fastflows
+    spec:
+      initContainers:
+        - name: check-orion-is-ready
+          image: curlimages/curl
+          command:
+            [
+              "sh",
+              "-c",
+              'while [ `curl -fsS http://localhost:4200/" --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
+            ]
+        - name: orion-queue
+          image: prefecthq/prefect:2.0b8-python3.9
+          command:
+            [
+              "sh",
+              "-c",
+              'prefect work-queue create default-queue; r=$?; [ "$r" -gt 0 ] && exit 0; exit 0',
+            ]
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 4200
+          env:
+            - name: PREFECT_API_URL
+              value: http://orion:4200/api
+      containers:
+        - name: main
+          image: geobeyond/fastflows:latest
+          imagePullPolicy: "IfNotPresent"
+          ports:
+            - containerPort: 5010
+          env:
+            - name: PREFECT_URI
+              value: http://orion:4200
+            - name: FASTFLOWS_PORT
+              value: "5010"
+          command: ["fastflows", "server"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastflows
+  labels:
+    app: fastflows
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5010
+      targetPort: 5010
+  selector:
+    app: fastflows
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: flow-runner
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "pods/status"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: flow-runner-role-binding
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: Role
+  name: flow-runner
+  apiGroup: rbac.authorization.k8s.io

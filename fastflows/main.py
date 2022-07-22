@@ -91,6 +91,7 @@ app.include_router(flow_runs.router)
 def app_run():
     uvicorn.run(
         "fastflows.main:app",
+        host=cfg.FASTFLOWS_HOST,
         port=cfg.FASTFLOWS_PORT,
         reload=cfg.RELOAD,
         access_log=cfg.ACCESS_LOG,

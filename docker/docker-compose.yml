@@ -22,7 +22,7 @@ services:
   #  - prefect
   #  - db
   prefect:
-    image: prefecthq/prefect:2.0b7-python3.9
+    image: prefecthq/prefect:2.0b8-python3.9
     entrypoint: prefect orion start --host 0.0.0.0
     environment:
       - PREFECT_ORION_DATABASE_CONNECTION_URL=postgresql+asyncpg://postgres:postgres@db:5432/orion
@@ -30,7 +30,7 @@ services:
       - 4200:4200
 
   prefect_work_queue:
-    image: prefecthq/prefect:2.0b7-python3.9
+    image: prefecthq/prefect:2.0b8-python3.9
     entrypoint: prefect work-queue create base-queue
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
@@ -40,7 +40,7 @@ services:
       - db
 
   prefect_agent:
-    image: prefecthq/prefect:2.0b7-python3.9
+    image: prefecthq/prefect:2.0b8-python3.9
     entrypoint: prefect agent start base-queue
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
@@ -61,24 +61,24 @@ services:
       - "5432:5432"
     volumes:
       - db:/var/lib/postgresql/data
-  keycloak:
-    image: jboss/keycloak:latest
-    ports:
-      - 8282:8080
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-  opa:
-    image: openpolicyagent/opa:latest
-    ports:
-      - 8383:8181
-    command:
-      - "run"
-      - "--server"
-      - "--log-level=debug"
-      - "/policy/auth.rego"
-    volumes:
-      - ./policy:/policy
+  #keycloak:
+  #  image: jboss/keycloak:latest
+  #  ports:
+  #    - 8282:8080
+  # environment:
+  #    - KEYCLOAK_USER=admin
+  #    - KEYCLOAK_PASSWORD=admin
+  #opa:
+  #  image: openpolicyagent/opa:latest
+  #  ports:
+  #    - 8383:8181
+  #  command:
+  #    - "run"
+  #    - "--server"
+  #    - "--log-level=debug"
+  #    - "/policy/auth.rego"
+  #  volumes:
+  #    - ./policy:/policy
 volumes:
   db:
     driver: local
