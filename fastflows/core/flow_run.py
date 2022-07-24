@@ -4,7 +4,7 @@ from fastflows.providers import provider
 
 
 def get_flow_run_details(
-    flow_run_id: str, graph: bool
+    flow_run_id: str, graph: bool = False
 ) -> Union[FlowRunResponse, FlowRunResponseGraph]:
     """
     :param flow_run_id: Flow Run Id in Prefect to get info about

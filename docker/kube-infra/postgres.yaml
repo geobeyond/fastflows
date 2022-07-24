@@ -33,7 +33,7 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: postgres
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:13.0
+          image: postgres:13.7
           imagePullPolicy: "IfNotPresent"
           ports:
             - containerPort: 5432
@@ -65,7 +65,7 @@ spec:
                   name: postgres-credentials
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - mountPath: "/var/lib/postgresql/data/:Z"
+            - mountPath: /var/lib/postgresql/data
               name: postgresdata
       volumes:
         - name: postgresdata
