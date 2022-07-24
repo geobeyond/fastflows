@@ -30,7 +30,6 @@ Steps to run:
 
     minikube start --driver=hyperkit --mount --mount-string flows:/app/flows
 
-
 ```
 
 4. **(For local env only)**

@@ -49,7 +49,7 @@ spec:
             [
               "sh",
               "-c",
-              'while [ `curl -fsS http://orion:4200" --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
+              'while [ `curl -fsS http://orion:4200 --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
             ]
         - name: orion-queue
           image: prefecthq/prefect:2.0b8-python3.9
