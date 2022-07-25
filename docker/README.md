@@ -20,13 +20,15 @@ Steps to run:
 
 ```console
 
+    # for postgresql data & flows
+    mkdir data
+
     minikube start
 
     # Important!!!
     # On MacOS to make Ingress work you should run minikube with hyperkit:
 
-    minikube start --driver=hyperkit
-
+    minikube start --driver=hyperkit --mount --mount-string flows:/app/flows
 
 ```
 

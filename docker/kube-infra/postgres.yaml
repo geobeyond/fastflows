@@ -33,7 +33,7 @@ kind: Deployment
 metadata:
   name: postgres
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: postgres
@@ -65,7 +65,7 @@ spec:
                   name: postgres-credentials
                   key: POSTGRES_PASSWORD
           volumeMounts:
-            - mountPath: "/var/lib/postgresql/data/:Z"
+            - mountPath: /var/lib/postgresql/data
               name: postgresdata
       volumes:
         - name: postgresdata

@@ -1,3 +1,32 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fastflows-volume
+  labels:
+    type: local
+    app: fastflows
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 500M
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /app/flows
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fastflows-volume-claim
+  labels:
+    app: fastflows
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500M
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -20,7 +49,7 @@ spec:
             [
               "sh",
               "-c",
-              'while [ `curl -fsS http://localhost:4200/" --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
+              'while [ `curl -fsS http://orion:4200 --silent --output /dev/null"` -ne 200 ]; do sleep 2; done',
             ]
         - name: orion-queue
           image: prefecthq/prefect:2.0b8-python3.9
@@ -45,9 +74,18 @@ spec:
           env:
             - name: PREFECT_URI
               value: http://orion:4200
+            - name: FLOWS_HOME
+              value: "/flows"
             - name: FASTFLOWS_PORT
               value: "5010"
           command: ["fastflows", "server"]
+          volumeMounts:
+            - mountPath: /flows
+              name: fastflows-volume
+      volumes:
+        - name: fastflows-volume
+          persistentVolumeClaim:
+            claimName: fastflows-volume-claim
 ---
 apiVersion: v1
 kind: Service
@@ -63,31 +101,3 @@ spec:
       targetPort: 5010
   selector:
     app: fastflows
-
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  namespace: default
-  name: flow-runner
-rules:
-  - apiGroups: [""]
-    resources: ["pods", "pods/log", "pods/status"]
-    verbs: ["get", "watch", "list"]
-  - apiGroups: ["batch"]
-    resources: ["jobs"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: flow-runner-role-binding
-  namespace: default
-subjects:
-  - kind: ServiceAccount
-    name: default
-    namespace: default
-roleRef:
-  kind: Role
-  name: flow-runner
-  apiGroup: rbac.authorization.k8s.io
