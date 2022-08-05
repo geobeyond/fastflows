@@ -199,7 +199,7 @@ test = ["pytest (>=6.2.4,<7.0.0)", "pytest-cov (>=2.12.0,<4.0.0)", "mypy (==0.91
 
 [[package]]
 name = "fastapi-opa"
-version = "1.4.0"
+version = "1.4.1"
 description = "Fastapi OPA middleware incl. auth flow."
 category = "main"
 optional = false
@@ -213,8 +213,8 @@ PyJWT = {version = ">=2.4", extras = ["crypto"]}
 requests = "*"
 
 [package.extras]
-saml = ["python-multipart", "python3-saml"]
 graphql = ["graphene (>=2,<3)"]
+saml = ["python3-saml", "python-multipart"]
 
 [[package]]
 name = "filelock"
@@ -787,6 +787,7 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
+content-hash = "847c0ab9e9a0cc6576e6466c638fda22fe289bd3eebc6f989a84281854d45137"
 
 [metadata.files]
 anyio = [
@@ -957,8 +958,8 @@ fastapi = [
     {file = "fastapi-0.78.0.tar.gz", hash = "sha256:3233d4a789ba018578658e2af1a4bb5e38bdd122ff722b313666a9b2c6786a83"},
 ]
 fastapi-opa = [
-    {file = "fastapi-opa-1.4.0.tar.gz", hash = "sha256:96ef435b3e41c10e1016c7e9fbcd45f17a67375eac04229e67f929247ff514a3"},
-    {file = "fastapi_opa-1.4.0-py3-none-any.whl", hash = "sha256:01ead1c5d6a98f448f8417bb14dbe601e85e31cf805aaba7816f742937aa43c9"},
+    {file = "fastapi-opa-1.4.1.tar.gz", hash = "sha256:309f9324ee60602bb41ec6ffaea78a690d5b85022b3e7e33ab69767c59ba6fe7"},
+    {file = "fastapi_opa-1.4.1-py3-none-any.whl", hash = "sha256:7a0deb9ffe870038a1dd29a88213f7eea6bbd1a4495c26f9907ba8c83a8cae92"},
 ]
 filelock = [
     {file = "filelock-3.7.1-py3-none-any.whl", hash = "sha256:37def7b658813cda163b56fc564cdc75e86d338246458c4c28ae84cabefa2404"},
