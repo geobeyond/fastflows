@@ -353,7 +353,7 @@ source = ["Cython (>=0.29.7)"]
 
 [[package]]
 name = "mangum"
-version = "0.15.0"
+version = "0.15.1"
 description = "AWS Lambda support for ASGI applications"
 category = "main"
 optional = false
@@ -787,7 +787,7 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "847c0ab9e9a0cc6576e6466c638fda22fe289bd3eebc6f989a84281854d45137"
+content-hash = "332685cbcd06a6d1cf8aa48a0eb6b278be90377cc59bb7e755d8ab6cb0012d29"
 
 [metadata.files]
 anyio = [
@@ -1074,8 +1074,8 @@ lxml = [
     {file = "lxml-4.9.1.tar.gz", hash = "sha256:fe749b052bb7233fe5d072fcb549221a8cb1a16725c47c37e42b0b9cb3ff2c3f"},
 ]
 mangum = [
-    {file = "mangum-0.15.0-py3-none-any.whl", hash = "sha256:bfd0e59ca8102be119b00b0d65894fcead8184438ecfa3110f87c7d2d9c90f01"},
-    {file = "mangum-0.15.0.tar.gz", hash = "sha256:12e84806198b23bbd5a54b9b69c1aef3c62177347219bb57c8ec114b8a6b8537"},
+    {file = "mangum-0.15.1-py3-none-any.whl", hash = "sha256:b9b63cc303ab6fd07c37c6d7c59fdd712b0ad07ef858faff9812be2a12d4d2ca"},
+    {file = "mangum-0.15.1.tar.gz", hash = "sha256:dafd45692fb74bbdaad44d32afc07ed393f6f9e6150b880b5b78d0c4cd0f392b"},
 ]
 mccabe = [
     {file = "mccabe-0.7.0-py2.py3-none-any.whl", hash = "sha256:6c2d30ab6be0e4a46919781807b4f0d834ebdd6c6e3dca0bda5a15f863427b6e"},
