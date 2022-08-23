@@ -4,9 +4,9 @@ from typing import List
 from rich import print as rprint
 from typing import Optional
 from fastflows.config.app import configuration
-from fastflows.schemas.flow import FlowDeployInput
-from fastflows.schemas.flow_run import FlowRunInput
-from fastflows.schemas.deployment import DeploymentInputParams
+from fastflows.schemas.prefect.flow import FlowDeployInput
+from fastflows.schemas.prefect.flow_run import FlowRunInput
+from fastflows.schemas.prefect.deployment import DeploymentInputParams
 from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
 from fastflows.core.flow import run_flow, list_flows, deploy_flows
 from fastflows.cli.utils import (
@@ -58,7 +58,7 @@ def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
 
 
 @flows_app.command()
-@catch_exceptions
+# @catch_exceptions
 def deploy(
     flows_home_path: str = typer.Argument(
         configuration.FLOWS_HOME, callback=check_path_is_dir
@@ -92,12 +92,12 @@ def deploy(
         typer.echo(f"Deploy flow '{flow_name}' {sub_message}")
 
     else:
-        typer.echo(f"Deploy all flows from path: {flow_path}")
+        typer.echo(f"Deploy all flows from path: {flows_home_path}")
 
     deploy_flows(
         flow_input=FlowDeployInput(
             flows_home_path=flows_home_path,
-            flow_name=flow_name,
+            name=flow_name,
             flow_path=flow_path,
             deployment_params=DeploymentInputParams(
                 schedule=schedule,

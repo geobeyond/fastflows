@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastflows.schemas.flow_run import (
+from fastflows.schemas.prefect.flow_run import (
     FlowRunResponse,
     StateBase,
     UpdateStateResponse,

@@ -1,4 +1,8 @@
-from fastflows.schemas.flow_run import StateBase, FlowRunResponseGraph, FlowRunResponse
+from fastflows.schemas.prefect.flow_run import (
+    StateBase,
+    FlowRunResponseGraph,
+    FlowRunResponse,
+)
 from typing import Union
 from fastflows.providers import provider
 

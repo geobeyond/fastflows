@@ -1,0 +1,5 @@
+site_name: FastFlows Docs
+theme:
+  name: material
+extra_css:
+  - stylesheets/extra.css

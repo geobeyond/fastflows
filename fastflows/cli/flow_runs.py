@@ -1,6 +1,6 @@
 import typer
 import sys
-from fastflows.schemas.flow_run import StateBase, FlowRunStateEnum
+from fastflows.schemas.prefect.flow_run import StateBase, FlowRunStateEnum
 from rich import print as rprint
 from fastflows.core.flow_run import (
     update_flow_run_state,

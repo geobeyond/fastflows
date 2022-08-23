@@ -1,10 +1,9 @@
 import ast
 import os
 import sys
-from fastflows.schemas.flow_data import (
+from fastflows.schemas.prefect.flow_data import (
     FlowDataFromFile,
     ScheduleFromFile,
-    FlowData,
     TagsFromFile,
     Schedule,
 )
@@ -126,6 +125,6 @@ class FlowFileReader:
                 if schedule
                 else None,
                 tags=tag.tags if tag else [],
-                flow_data=FlowData(blob=self.file_data, encoding="text"),
+                flow_data=self.file_data,
             )
             self.flows.append(flow)

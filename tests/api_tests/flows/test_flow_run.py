@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
-from fastflows.schemas.flow import Flow
-from fastflows.schemas.flow_run import FlowRunResponse
+from fastflows.schemas.prefect.flow import Flow
+from fastflows.schemas.prefect.flow_run import FlowRunResponse
 
 
 @pytest.fixture

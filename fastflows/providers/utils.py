@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import fastflows
 import httpx
 from fastflows import errors
-from fastflows.schemas.misc import DefaultAPIResponseModel
+from fastflows.schemas.prefect.misc import DefaultAPIResponseModel
 
 
 def get_response_model(func: Callable, response_model: Optional[BaseModel]):
