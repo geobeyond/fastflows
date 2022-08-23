@@ -5,53 +5,55 @@
 version: "3.9"
 
 services:
-  #fastflows:
-  #build:
-  #context: ../
-  #dockerfile: ./docker/Dockerfile
-  #ports:
-  #- ${FASTFLOWS_PORT}:${FASTFLOWS_PORT}
-  #volumes:
-  #- .:/app/src
-  #- ../flows:/app/flows
-  #image: fastflows
-  # restart: always
-  #env_file:
-  #  - .env
-  #depends_on:
-  #  - prefect
-  #  - db
+  fastflows:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - ${FASTFLOWS_PORT}:${FASTFLOWS_PORT}
+    volumes:
+      - .:/app/src
+      - ../flows:/app/flows
+    image: fastflows
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - prefect
+      - postgres
   prefect:
-    image: prefecthq/prefect:2.0b8-python3.9
-    entrypoint: prefect orion start --host 0.0.0.0
+    image: prefecthq/prefect:2.1.1-python3.9
+    command: prefect orion start --host 0.0.0.0
+    restart: always
     environment:
-      - PREFECT_ORION_DATABASE_CONNECTION_URL=postgresql+asyncpg://postgres:postgres@db:5432/orion
+      - EXTRA_PIP_PACKAGES=s3fs
+      - PREFECT_ORION_DATABASE_CONNECTION_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/orion
     ports:
       - 4200:4200
 
   prefect_work_queue:
-    image: prefecthq/prefect:2.0b8-python3.9
+    image: prefecthq/prefect:2.1.1-python3.9
     entrypoint: prefect work-queue create base-queue
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
     restart: on-failure
     depends_on:
       - prefect
-      - db
+      - postgres
 
   prefect_agent:
-    image: prefecthq/prefect:2.0b8-python3.9
-    entrypoint: prefect agent start base-queue
+    image: prefecthq/prefect:2.1.1-python3.9
+    command: prefect agent start base-queue
     environment:
+      - EXTRA_PIP_PACKAGES=s3fs
       - PREFECT_API_URL=http://prefect:4200/api
     restart: on-failure
     depends_on:
       - prefect
-      - db
+      - postgres
       - prefect_work_queue
-
-  db:
-    image: postgres:14.1-alpine
+  postgres:
+    image: postgres:13
     restart: always
     environment:
       - POSTGRES_USER=postgres
@@ -60,25 +62,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db:/var/lib/postgresql/data
-  #keycloak:
-  #  image: jboss/keycloak:latest
-  #  ports:
-  #    - 8282:8080
-  # environment:
-  #    - KEYCLOAK_USER=admin
-  #    - KEYCLOAK_PASSWORD=admin
-  #opa:
-  #  image: openpolicyagent/opa:latest
-  #  ports:
-  #    - 8383:8181
-  #  command:
-  #    - "run"
-  #    - "--server"
-  #    - "--log-level=debug"
-  #    - "/policy/auth.rego"
-  #  volumes:
-  #    - ./policy:/policy
+      - ./db:/var/lib/postgresql/data
 volumes:
   db:
     driver: local
+
+networks:
+  default:
+    name: prefect-network
+    external: true

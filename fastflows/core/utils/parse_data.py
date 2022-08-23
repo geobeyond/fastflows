@@ -1,5 +1,5 @@
 from fastflows.errors import FastFlowException
-from fastflows.schemas.flow_data import Schedule
+from fastflows.schemas.prefect.flow_data import Schedule
 import pydantic
 from typing import List, Optional
 

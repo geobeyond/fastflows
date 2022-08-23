@@ -1,0 +1,17 @@
+.md-header {
+  background-color: #3d496d;
+  box-shadow: 0 0 0.2rem transparent, 0 0.2rem 0.4rem transparent;
+  color: var(--md-primary-bg-color);
+  display: block;
+  left: 0;
+  position: -webkit-sticky;
+  position: sticky;
+  right: 0;
+  top: 0;
+  z-index: 4;
+}
+.md-nav--primary .md-nav__title[for="__drawer"] {
+  background-color: #3d496d;
+  color: var(--md-primary-bg-color);
+  font-weight: 700;
+}

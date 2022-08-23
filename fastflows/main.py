@@ -71,10 +71,12 @@ app = create_app()
 
 @app.on_event("startup")
 async def startup_event():
-    provider.healthcheck()
-    # todo: improve to avoid re-deploying each time when server up & run
+
+    if cfg.FASTFLOWS_PROVIDER_PREPARE_AT_THE_START:
+        provider.healthcheck()
+
     if cfg.FASTFLOWS_AUTO_DEPLOYMENT == 1:
-        logging.info("Register Flows in Prefect")
+        logging.info(f"Register Flows in {provider.type.capitalize()} provider")
         try:
             Catalog().register_and_deploy()
         except FastFlowException:

@@ -1,6 +1,6 @@
 from typing import List, Optional
-from fastflows.schemas.flow import Flow, FlowDeployInput
-from fastflows.schemas.flow_run import FlowRunResponse, FlowRunInput
+from fastflows.schemas.prefect.flow import Flow, FlowDeployInput
+from fastflows.schemas.prefect.flow_run import FlowRunResponse, FlowRunInput
 from fastflows.errors import FlowNotFound
 from fastflows.core.catalog.catalog import catalog, Catalog, catalog_by_id
 from fastflows.providers import provider

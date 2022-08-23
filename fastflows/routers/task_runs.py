@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastflows.schemas.task_run import TaskRunState
+from fastflows.schemas.prefect.task_run import TaskRunState
 from fastflows.core.task_run import update_task_run_state
 from fastflows.routers import handle_rest_errors
 

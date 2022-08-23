@@ -1,4 +1,4 @@
-from fastflows.schemas.task_run import TaskRunState, TaskState
+from fastflows.schemas.prefect.task_run import TaskRunState, TaskState
 
 
 def update_task_run_state(task_run_id: str):

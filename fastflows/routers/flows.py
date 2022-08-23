@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from fastflows.schemas.flow import FlowDeployInput, Flow
-from fastflows.schemas.flow_run import FlowRunInput
+from fastflows.schemas.prefect.flow import FlowDeployInput, Flow
+from fastflows.schemas.prefect.flow_run import FlowRunInput
 from fastflows.core.flow import run_flow, list_flows, get_flow_runs_list, deploy_flows
 from fastflows.routers import handle_rest_errors
 from typing import List, Optional

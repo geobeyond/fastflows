@@ -1,21 +1,20 @@
 # Contributor Guide
 
-Thank you for your interest in improving this project. This project is
-open-source under the [MIT license](https://opensource.org/licenses/MIT)
-and welcomes contributions in the form of bug reports, feature requests,
-and pull requests.
+Thank you for your interest in improving this project.
+
+This project is open-source under the [MIT license](https://opensource.org/licenses/MIT) and welcomes contributions in the form of bug reports, feature requests, and pull requests.
 
 Here is a list of important resources for contributors:
 
-- [Source Code](https://github.com/geobeyond/fastgeoapi)
-- [Documentation](https://fastgeoapi.readthedocs.io/)
-- [Issue Tracker](https://github.com/geobeyond/fastgeoapi/issues)
-- [Code of Conduct](CODE_OF_CONDUCT.rst)
+- [Source Code](https://github.com/geobeyond/fastflows)
+- [Documentation](https://fastflows.readthedocs.io/)
+- [Issue Tracker](https://github.com/geobeyond/fastflows/issues)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
 
 ## How to report a bug
 
 Report bugs on the [Issue
-Tracker](https://github.com/geobeyond/fastgeoapi/issues).
+Tracker](https://github.com/geobeyond/fastflows/issues).
 
 When filing an issue, make sure to answer these questions:
 
@@ -31,7 +30,7 @@ steps to reproduce the issue.
 ## How to request a feature
 
 Request features on the [Issue
-Tracker](https://github.com/geobeyond/fastgeoapi/issues).
+Tracker](https://github.com/geobeyond/fastflows/issues).
 
 ## How to set up your development environment
 
@@ -55,11 +54,19 @@ interface:
 ```console
 
   $ poetry run python
-  $ poetry run fastgeoapi
+  $ poetry run fastflows
 
 ```
 
 ## How to test the project
+
+Most part of the tests are Integration & API tests. They uses several components, for example, like Prefect server. To make tests running you should up & run prefect cluster that will be used as Provider in FastFlows.
+
+How to do that - read the documentation in 'docker/' path:
+
+[How to run Prefect cluster instructions](docker/README.md)
+
+After that you can do things below:
 
 Run the full test suite:
 
@@ -87,7 +94,7 @@ the [pytest](https://pytest.readthedocs.io/) testing framework.
 
 ## How to submit changes
 
-Open a [pull request](https://github.com/geobeyond/fastgeoapi/pulls)
+Open a [pull request](https://github.com/geobeyond/fastflows/pulls)
 to submit changes to this project.
 
 Your pull request needs to meet the following guidelines for acceptance:

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "fastflows"
-version = "0.1.0.dev.1658740973"
-description = "FastFlows is a FastAPI server & command line tool to comunicate with Prefect 2.0 as a Workflow manager to deploy, run, track flows and more."
+version = "0.1.0"
+description = "FastFlows is a FastAPI server & command line tool to comunicate with Prefect 2.0 as a Workflow manager (and in future other systems like Pygeoapi, for example) to deploy, run, track flows and more."
 authors = ["Francesco Bartoli <francesco.bartoli@geobeyond.it>", "Iuliia Volkova <xnuinside@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -22,6 +22,9 @@ mangum = "^0.15.0"
 fastapi-opa = "^1.3.7"
 uvicorn = ">=0.17.6,<0.19.0"
 rich = "^12.4.4"
+python-slugify = "^6.1.2"
+fsspec = "^2022.7.1"
+s3fs = "^2022.7.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
@@ -30,6 +33,7 @@ black = "^22.3.0"
 nox = "^2022.8.7"
 nox-poetry = "^1.0.1"
 pre-commit = "^2.20.0"
+mkdocs-material = "^8.3.9"
 
 [tool.poetry.scripts]
 fastflows = "fastflows.cli.main:app"

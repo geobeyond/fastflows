@@ -2,15 +2,20 @@ import os
 import logging
 from fastflows.errors import FlowNotFound
 from fastflows.config.app import configuration as cfg
-from fastflows.core.deployment import get_last_deployments_per_flow
+from fastflows.core.deployment import (
+    get_last_deployments_per_flow,
+    create_flow_deployment,
+)
 from fastflows.core.catalog.storage import LocalStorage
 from fastflows.core.catalog.reader import FlowFileReader
-from fastflows.schemas.flow import Flow, PrefectFlowResponse, FlowDeployInput
-from fastflows.schemas.flow_data import FlowDataFromFile, BaseFlowData
+from fastflows.schemas.prefect.flow import Flow, PrefectFlowResponse, FlowDeployInput
+from fastflows.schemas.prefect.flow_data import FlowDataFromFile, BaseFlowData
 from fastflows.providers import provider
 from fastflows.core.catalog.cache import CatalogCache
 from fastflows.core.utils.singleton import Singleton
-from fastflows.schemas.deployment import DeploymentSpec, FlowData, DeploymentResponse
+from fastflows.schemas.prefect.deployment import (
+    DeploymentResponse,
+)
 from typing import List, Optional, Dict, Union
 
 
@@ -45,9 +50,9 @@ class Catalog(metaclass=Singleton):
             )
         return storage(self.flows_home_path)
 
-    def get_flow_data(self, flow_file_path: str) -> FlowData:
+    def get_flow_data(self, flow_file_path: str) -> str:
         with open(flow_file_path) as f:
-            return FlowData(blob=f.read())
+            return f.read()
 
     def get_catalog_from_cache(self):
         cached_data = self.cache.read()
@@ -60,7 +65,7 @@ class Catalog(metaclass=Singleton):
         # method to use in test
         self.flows_home_path = new_path
 
-    def _blob_data_processing(self, flow_data: str) -> FlowData:
+    def _blob_data_processing(self, flow_data: str) -> str:
 
         flow_file = FlowFileReader(flow_data=flow_data)
 
@@ -91,7 +96,7 @@ class Catalog(metaclass=Singleton):
     def _get_flows_from_path(
         self, flow_input: FlowDeployInput
     ) -> List[FlowDataFromFile]:
-        if flow_input.flow_path:
+        if flow_input.file_path:
             flows_in_folder = self._flow_path_processing(flow_input.flow_path)
         elif flow_input.flow_data:
             flows_in_folder = self._blob_data_processing(flow_input.flow_data.blob)
@@ -175,9 +180,9 @@ class Catalog(metaclass=Singleton):
 
         flows_in_folder = self._get_flows_from_path(flow_input)
 
-        if flow_input.flow_name:
+        if flow_input.name:
             flows_in_folder: List[FlowDataFromFile] = self._filter_flows_by_name(
-                flows_in_folder, flow_input.flow_name, flow_input.flow_path
+                flows_in_folder, flow_input.name, flow_input.flow_path
             )
 
         flows_deployed = []
@@ -218,10 +223,15 @@ class Catalog(metaclass=Singleton):
         if not flow:
             # mean no updates - no need to redeploy
             return
-
         version = self._get_deployment_version(flow, flow_file)
+        full_flow_data = {}
+        full_flow_data.update(flow.dict())
+        full_flow_data.update(flow_file.dict())
+        from pathlib import Path
 
-        deployment = self._deploy_flow(flow, flow_file, version)
+        full_flow_data["flow_base_path"] = str(Path(full_flow_data["file_path"]).parent)
+        flow_deploy_input = FlowDeployInput(**full_flow_data)
+        deployment = self._deploy_flow(flow_deploy_input)
 
         flow = Flow(
             id=flow.id,
@@ -255,19 +265,8 @@ class Catalog(metaclass=Singleton):
             )
         return flow
 
-    def _deploy_flow(
-        self, flow: Flow, flow_file: FlowDataFromFile, version: int
-    ) -> DeploymentResponse:
-        deployment_spec = DeploymentSpec(
-            flow_id=flow.id,
-            flow_data=flow_file.flow_data,
-            # todo: add parsing for schedule
-            deployment_name=flow_file.name,
-            schedule=None,
-            is_schedule_active=False,
-            version=version,
-        )
-        deployment_response = provider.deploy_flow(deployment_spec)
+    def _deploy_flow(self, flow: FlowDeployInput) -> DeploymentResponse:
+        deployment_response = create_flow_deployment(flow)
         return deployment_response
 
     def _get_full_flow_location(self, flow_file_name: str) -> str:

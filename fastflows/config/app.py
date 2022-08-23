@@ -6,13 +6,32 @@ from pydantic import BaseSettings
 class Config(BaseSettings):
 
     ENV_NAME: Optional[str] = os.environ.get("ENV_NAME")
+
     # each environment read variables with own prefix
     # to override settings use environment variables
     # with prefix from 'env_prefix' in config
     PREFECT_URI: str = "http://localhost:8080"
     PREFECT_API_TIMEOUT: int = 120
-    DEFAULT_FLOW_RUNNER_TYPE: str = "subprocess"
+    # must be one of 'local-file-system', 'remote-file-system', 's3', 'gcs', 'azure'"
+    PREFECT_STORAGE_BLOCK_TYPE: str = "remote-file-system"
+    # it can be main bucket or main path, flows files will be stored in paths like $PREFECT_STORAGE_BASEPATH/flow-name
+    PREFECT_STORAGE_BASEPATH: str = "s3://test-bucket"
 
+    # for this name Fastflows will check Block to use to upload flows in Prefect
+    PREFECT_STORAGE_NAME: str = "minio6"
+
+    # for remote-file-system
+    # should be a json-like string in env variables
+    PREFECT_STORAGE_SETTINGS: dict = {
+        "key": "0xoznLEXV3JHiOKx",
+        "secret": "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs",
+        "client_kwargs": {"endpoint_url": "http://nginx:9000"},
+    }
+
+    # must be on of "process"
+    PREFECT_INFRASTRUCTURE_BLOCK_TYPE: str = "process"
+    # PYGEOAPI URI is used to run flows if provder == Pygeoapi
+    PYGEOAPI_URI: str = "http://localhost:8080"
     # config for tags information & parsing flows properties
     VERSION_PREFIX: str = "ver"
     TAG_DELIMITER: str = ":"
@@ -26,6 +45,7 @@ class Config(BaseSettings):
     FASTFLOWS_CATALOG_CACHE: str = "./flows/.fastflows"
     FASTFLOWS_AUTO_DEPLOYMENT: int = 1
     FASTFLOW_DEBUG: int = 1
+    FASTFLOWS_PROVIDER_PREPARE_AT_THE_START: int = 1
 
     # logging
     LOG_LEVEL: str = "DEBUG"

@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-from fastflows.schemas.flow import Flow
+from fastflows.schemas.prefect.flow import Flow
 
 
 def test_flow_create(create_flow: Flow) -> None:

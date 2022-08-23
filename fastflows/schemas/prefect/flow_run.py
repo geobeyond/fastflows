@@ -2,8 +2,7 @@ import datetime
 from enum import Enum
 from pydantic import BaseModel, Field, Json
 from typing import Optional, List, Union
-from fastflows.schemas.deployment import FlowRunner
-from fastflows.schemas.misc import Status, Details
+from fastflows.schemas.prefect.misc import Status, Details
 
 
 class FlowRunStateEnum(str, Enum):
@@ -95,7 +94,6 @@ class InitFlowRun(BaseModel):
     idempotency_key: Optional[str]
     context: Optional[dict] = Field(default_factory=dict)
     tags: Optional[list] = Field(default_factory=list)
-    flow_runner: Optional[FlowRunner]
     state: Optional[StateBase]
 
 

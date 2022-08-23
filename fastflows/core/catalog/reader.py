@@ -1,10 +1,9 @@
 import ast
 import os
 import sys
-from fastflows.schemas.flow_data import (
+from fastflows.schemas.prefect.flow_data import (
     FlowDataFromFile,
     ScheduleFromFile,
-    FlowData,
     TagsFromFile,
     Schedule,
 )
@@ -85,6 +84,7 @@ class FlowFileReader:
         tags: List[TagsFromFile],
     ) -> None:
         decor = function.decorator_list[0]
+        func_name = function.name
         flow_name = None
         is_flow = False
         if isinstance(decor, ast.Name) and decor.id == "flow":
@@ -118,6 +118,7 @@ class FlowFileReader:
 
             flow = FlowDataFromFile(
                 name=flow_name,
+                entrypoint=f"{self.file_path}:{func_name}",
                 file_path=self.file_path,
                 file_modified=os.path.getmtime(self.file_path)
                 if self.file_path
@@ -126,6 +127,6 @@ class FlowFileReader:
                 if schedule
                 else None,
                 tags=tag.tags if tag else [],
-                flow_data=FlowData(blob=self.file_data, encoding="text"),
+                flow_data=self.file_data,
             )
             self.flows.append(flow)

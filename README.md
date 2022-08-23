@@ -24,31 +24,17 @@ Fastflows will read variables like LOCAL_PREFECT_URI and LOCAL_FLOWS_HOME,
 
 if ENV_NAME = 'dev', then fastflow will expect variables like 'dev_PREFECT_URI' and 'dev_FLOWS_HOME'
 
-## Build FastFlows
+### How to run FastFlows with Prefect cluster
 
-To build stand alone image:
+#### with Kubernetes
 
-```console
+- [Kube instructions](docker/README.md)
+- [Kubernetes configuration](docker/kube-infra/)
 
-    docker build . -f docker/Dockerfile -t fastflows
+#### with Docker-Compose
 
-```
-
-### Run Prefect witn DB in Docker-Compose
-
-```console
-
-    docker-compose -f ./docker/docker-compose.yml up  --build
-
-```
-
-To enter UI:
-
-```console
-    # if you will try to use 0.0.0.0 you will not see any data because of CORS issues
-    http://localhost:4200/flows
-
-```
+- [Docker-Compose readme](docker/README.md)
+- [Docker-compose YAML](docker/docker-compose.yml)
 
 ### Run cli
 

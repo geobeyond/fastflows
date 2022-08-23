@@ -1,6 +1,6 @@
 from typer.testing import CliRunner
 from tests.integration.cli.conftest import app
-from fastflows.schemas.flow import Flow
+from fastflows.schemas.prefect.flow import Flow
 
 
 def test_change_state_flow_run_error(runner: CliRunner, run_flow: Flow):
