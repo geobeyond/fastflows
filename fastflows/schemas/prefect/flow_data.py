@@ -34,6 +34,7 @@ class FlowDataFromFile(BaseFlowData):
     schedule: Optional[Schedule]
     # hash from file/flow code (md5)
     deployment_name: Optional[str]
+    entrypoint: Optional[str]
 
     @root_validator(pre=True)
     def _generate_deployment_name(

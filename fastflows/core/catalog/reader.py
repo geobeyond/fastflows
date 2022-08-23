@@ -84,6 +84,7 @@ class FlowFileReader:
         tags: List[TagsFromFile],
     ) -> None:
         decor = function.decorator_list[0]
+        func_name = function.name
         flow_name = None
         is_flow = False
         if isinstance(decor, ast.Name) and decor.id == "flow":
@@ -117,6 +118,7 @@ class FlowFileReader:
 
             flow = FlowDataFromFile(
                 name=flow_name,
+                entrypoint=f"{self.file_path}:{func_name}",
                 file_path=self.file_path,
                 file_modified=os.path.getmtime(self.file_path)
                 if self.file_path
