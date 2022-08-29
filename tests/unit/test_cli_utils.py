@@ -2,6 +2,9 @@ from fastflows.cli.utils import (
     process_parmas_as_a_string_with_dict,
     process_parmas_input_as_a_comma_separated_string,
     process_params_from_str,
+)
+
+from fastflows.utils.core import (
     check_path_is_dir,
 )
 import pytest

@@ -1,5 +1,7 @@
 import os
 import logging
+from slugify import slugify
+from pathlib import Path
 from fastflows.errors import FlowNotFound
 from fastflows.config.app import configuration as cfg
 from fastflows.core.deployment import (
@@ -97,9 +99,10 @@ class Catalog(metaclass=Singleton):
         self, flow_input: FlowDeployInput
     ) -> List[FlowDataFromFile]:
         if flow_input.file_path:
-            flows_in_folder = self._flow_path_processing(flow_input.flow_path)
+            flows_in_folder = self._flow_path_processing(flow_input.file_path)
+
         elif flow_input.flow_data:
-            flows_in_folder = self._blob_data_processing(flow_input.flow_data.blob)
+            flows_in_folder = self._blob_data_processing(flow_input.flow_data)
         else:
             flows_in_folder = self.process_flows_folder()
 
@@ -120,6 +123,7 @@ class Catalog(metaclass=Singleton):
                 err_message = (
                     f"Flow with name '{flow_name}' was not found in path '{flows_path}'"
                 )
+
             raise FlowNotFound(err_message)
         return flows_in_folder
 
@@ -182,7 +186,7 @@ class Catalog(metaclass=Singleton):
 
         if flow_input.name:
             flows_in_folder: List[FlowDataFromFile] = self._filter_flows_by_name(
-                flows_in_folder, flow_input.name, flow_input.flow_path
+                flows_in_folder, flow_input.name, flow_input.file_path
             )
 
         flows_deployed = []
@@ -212,6 +216,18 @@ class Catalog(metaclass=Singleton):
             version = 1
         return version
 
+    def create_flow_file(self, full_flow_data: dict) -> dict:
+        flow_file_name = slugify(full_flow_data["name"]).replace("-", "_")
+        full_flow_path = os.path.join(cfg.FLOWS_HOME, f"{flow_file_name}.py")
+
+        with open(full_flow_path, "w+") as file:
+            file.write(full_flow_data["flow_data"])
+
+        full_flow_data["file_path"] = full_flow_path
+        full_flow_data["flow_base_path"] = cfg.FLOWS_HOME
+
+        return full_flow_data
+
     def _process_flow_file_deployment(
         self, flow_file: FlowDataFromFile, force: bool
     ) -> Optional[Flow]:
@@ -227,9 +243,13 @@ class Catalog(metaclass=Singleton):
         full_flow_data = {}
         full_flow_data.update(flow.dict())
         full_flow_data.update(flow_file.dict())
-        from pathlib import Path
-
-        full_flow_data["flow_base_path"] = str(Path(full_flow_data["file_path"]).parent)
+        if not full_flow_data.get("file_path"):
+            # mean flow loaded by content with REST API or cli
+            self.create_flow_file(full_flow_data)
+        if not full_flow_data.get("flow_base_path"):
+            full_flow_data["flow_base_path"] = str(
+                Path(full_flow_data["file_path"]).parent
+            )
         flow_deploy_input = FlowDeployInput(**full_flow_data)
         deployment = self._deploy_flow(flow_deploy_input)
 

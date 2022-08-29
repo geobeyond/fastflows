@@ -12,6 +12,8 @@ from fastflows.core.flow import run_flow, list_flows, deploy_flows
 from fastflows.cli.utils import (
     catch_exceptions,
     process_params_from_str,
+)
+from fastflows.utils.core import (
     check_path_is_dir,
     check_path_exists,
 )
@@ -58,7 +60,7 @@ def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
 
 
 @flows_app.command()
-# @catch_exceptions
+@catch_exceptions
 def deploy(
     flows_home_path: str = typer.Argument(
         configuration.FLOWS_HOME, callback=check_path_is_dir
@@ -84,21 +86,23 @@ def deploy(
     force: bool = typer.Option(False, help="Force re-deploy all flows"),
 ):
     """Register flows in FastFlows & Prefect server"""
-    if flow_name:
-        if not flow_path:
-            sub_message = f"from directory: {flows_home_path}"
-        else:
-            sub_message = f"from path: {flow_path}"
-        typer.echo(f"Deploy flow '{flow_name}' {sub_message}")
 
+    if not flow_path:
+        sub_message = f"from directory: {flows_home_path}"
     else:
-        typer.echo(f"Deploy all flows from path: {flows_home_path}")
+        sub_message = f"from path: {flow_path}"
+    if flow_name:
+        main_message = f"Deploy flow '{flow_name}'"
+    else:
+        main_message = "Deploy all flows"
+
+    typer.echo(f"{main_message} {sub_message}")
 
     deploy_flows(
         flow_input=FlowDeployInput(
             flows_home_path=flows_home_path,
             name=flow_name,
-            flow_path=flow_path,
+            file_path=flow_path,
             deployment_params=DeploymentInputParams(
                 schedule=schedule,
                 is_schedule_active=active,

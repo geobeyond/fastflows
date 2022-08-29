@@ -48,7 +48,7 @@ class Config(BaseSettings):
     FASTFLOWS_PROVIDER_PREPARE_AT_THE_START: int = 1
 
     # logging
-    LOG_LEVEL: str = "DEBUG"
+    LOG_LEVEL: str = "INFO"
     LOG_PATH: str = "/tmp"
     LOG_FILENAME: str = "fastflows.log"
     LOG_ENQUEUE: bool = True

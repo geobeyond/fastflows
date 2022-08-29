@@ -1,6 +1,6 @@
 import datetime
 from enum import Enum
-from pydantic import BaseModel, Field, Json
+from pydantic import BaseModel, Field
 from typing import Optional, List, Union
 from fastflows.schemas.prefect.misc import Status, Details
 
@@ -39,17 +39,12 @@ class FlowRunBlobData(BaseModel):
     block_document_id: Optional[str]
 
 
-class DataObject(BaseModel):
-    encoding: str
-    blob: Json
-
-
 class State(StateBase):
     id: str
     name: str
     timestamp: datetime.datetime
     message: Optional[str]
-    data: Optional[Union[DataObject, str]]
+    data: Optional[str]
     state_details: Optional[StateDetails]
 
 
@@ -72,7 +67,7 @@ class FlowRunResponse(FlowRunState):
     idempotency_key: Optional[str]
     context: dict
     empirical_policy: dict
-    empirical_config: dict
+    empirical_config: Optional[dict]
     tags: List[str]
     parent_task_run_id: Optional[str]
     state_type: FlowRunStateEnum

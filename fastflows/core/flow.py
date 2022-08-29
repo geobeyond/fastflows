@@ -27,7 +27,7 @@ def get_flow_by_name(flow_name: str) -> Flow:
 
 def register_flow_and_check(flow_id: str, catalog: dict) -> Flow:
     # try to register flows, maybe they was updated during runtime
-    Catalog().register_and_deploy(FlowDeployInput())
+    Catalog().register_and_deploy()
     flow = catalog.get(flow_id)
     if not flow:
         raise FlowNotFound(

@@ -27,7 +27,7 @@ def test_flow():
 
 test_flow()
 """
-    payload = {"flow_data": {"blob": flow_code}, "schedule": "0 5 * * *"}
+    payload = {"flow_data": flow_code, "schedule": "0 5 * * *"}
     response = client.post("/flows", json=payload)
     response_body = response.json()[0]
     assert response.status_code == 200
@@ -37,37 +37,40 @@ test_flow()
 
 def test_flow_create_by_flow_name_404(client: TestClient) -> None:
 
-    payload = {"flow_name": "Simple Flow"}
+    payload = {"name": "Not Existed Flow"}
     response = client.post("/flows", json=payload)
     response_body = response.json()
+
     assert response.status_code == 404
     assert (
         response_body["detail"]
-        == "Flow with name 'Simple Flow' was not found in flows home dir 'tests/test_data/flows'"
+        == "Flow with name 'Not Existed Flow' was not found in flows home dir 'tests/test_data/flows'"
     )
 
 
 def test_flow_create_by_flow_name(client: TestClient) -> None:
 
-    payload = {"flow_name": "Simple Flow2"}
+    payload = {"name": "Simple Flow2"}
+    import os
+
+    os.environ["FLOWS_HOME"] = "tests/test_data/flows"
     response = client.post("/flows", json=payload)
     response_body = response.json()[0]
-
     assert response.status_code == 200
     assert response_body["name"] == "Simple Flow2"
     assert response_body["id"]
     assert response_body["deployment_id"]
 
 
-def test_flow_create_by_flow_path_404(client: TestClient) -> None:
+def test_flow_create_by_file_path_404(client: TestClient) -> None:
 
-    payload = {"flow_path": "Simple Flow2"}
+    payload = {"file_path": "Not Existed Flow2"}
     response = client.post("/flows", json=payload)
     response_body = response.json()
 
     assert response.status_code == 404
     assert (
-        "Flow path 'tests/test_data/flows/Simple Flow2' does not"
+        "Flow path 'tests/test_data/flows/Not Existed Flow2' does not"
         in response_body["detail"]
     )
 
