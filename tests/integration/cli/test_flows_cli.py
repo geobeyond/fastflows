@@ -15,7 +15,8 @@ def test_flows_not_existed_flow(runner: CliRunner):
 
 def test_flows_existed_flow(runner: CliRunner):
     result = runner.invoke(
-        app, ["flows", "deploy", flows_home_path, "--flow-name", "Simple Flow2"]
+        app,
+        ["flows", "deploy", flows_home_path.as_posix(), "--flow-name", "Simple Flow2"],
     )
     assert result.exit_code == 0
     assert (

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, root_validator
 from enum import Enum
+from pathlib import Path
 from fastflows.schemas.prefect.misc import get_hash_from_data, Schedule
 from typing import Optional, List
 
@@ -27,7 +28,7 @@ class BaseFlowData(BaseModel):
 class FlowDataFromFile(BaseFlowData):
     """model to store information from Flow File"""
 
-    file_path: Optional[str]
+    file_path: Optional[Path]
     flow_data: Optional[str]
     # file_modified can be None if flow data from user input
     file_modified: Optional[int]

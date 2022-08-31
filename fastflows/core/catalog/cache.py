@@ -1,6 +1,6 @@
 import os
+import json
 from fastflows.config.app import configuration as cfg
-from ast import literal_eval
 
 
 class CatalogCache:
@@ -12,7 +12,7 @@ class CatalogCache:
 
     def check_or_create_home_folder(self) -> None:
 
-        if not os.path.exists(cfg.FLOWS_HOME):
+        if not cfg.FLOWS_HOME.exists():
             os.makedirs(cfg.FLOWS_HOME, exist_ok=True)
 
     def read(self) -> None:
@@ -34,7 +34,7 @@ class CatalogCache:
                 line = line.split(self.separator)
                 if len(line) > 1:
                     flows_data_list.append(line[0])
-                    flows_data_list.append(literal_eval(line[1]))
+                    flows_data_list.append(json.loads(line[1]))
 
             self.data = dict(zip(flows_data_list[0::2], flows_data_list[1::2]))
         return self.data
@@ -48,6 +48,6 @@ class CatalogCache:
     def catalog_dict_to_cache_str(self, data: dict) -> str:
         cache_str = ""
         for key, value in data.items():
-            value = value.dict()
+            value = value.json()
             cache_str += f"{key}{self.separator}{value}\n"
         return cache_str

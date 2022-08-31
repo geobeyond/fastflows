@@ -1,5 +1,6 @@
 """ flows command """
 import typer
+from pathlib import Path
 from typing import List
 from rich import print as rprint
 from typing import Optional
@@ -53,7 +54,7 @@ def run(
 
 @flows_app.command()
 @catch_exceptions
-def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
+def list(flow_path: Optional[Path] = configuration.FLOWS_HOME):
     """List all flows from FLOWS_HOME"""
     typer.echo("\nAll flows from FLOWS_HOME: \n")
     typer.echo(f"\nAvailable flows: {list_flows(flows_home_path=flow_path)}\n")
@@ -62,11 +63,11 @@ def list(flow_path: Optional[str] = configuration.FLOWS_HOME):
 @flows_app.command()
 @catch_exceptions
 def deploy(
-    flows_home_path: str = typer.Argument(
+    flows_home_path: Path = typer.Argument(
         configuration.FLOWS_HOME, callback=check_path_is_dir
     ),
     flow_name: Optional[str] = typer.Option(None, help="Flow name to deploy"),
-    flow_path: Optional[str] = typer.Option(
+    flow_path: Optional[Path] = typer.Option(
         None, help="Flow path to deploy", callback=check_path_exists
     ),
     schedule: Optional[str] = typer.Option(
@@ -88,9 +89,9 @@ def deploy(
     """Register flows in FastFlows & Prefect server"""
 
     if not flow_path:
-        sub_message = f"from directory: {flows_home_path}"
+        sub_message = f"from directory: {flows_home_path.as_posix()}"
     else:
-        sub_message = f"from path: {flow_path}"
+        sub_message = f"from path: {flow_path.as_posix()}"
     if flow_name:
         main_message = f"Deploy flow '{flow_name}'"
     else:

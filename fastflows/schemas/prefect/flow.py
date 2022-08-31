@@ -4,6 +4,7 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 from fastflows.schemas.prefect.deployment import DeploymentInputParams
 from fastflows.config.app import configuration as cfg
+from pathlib import Path
 
 
 # before prefect call
@@ -11,11 +12,11 @@ class FlowDeployInput(BaseModel):
     """REST Create flow Input model"""
 
     name: Optional[str]
-    flows_home_path: str = cfg.FLOWS_HOME
+    flows_home_path: Path = cfg.FLOWS_HOME
     flow_data: Optional[str]
-    file_path: Optional[str]
+    file_path: Optional[Path]
     id: Optional[str]
-    flow_base_path: Optional[str]
+    flow_base_path: Optional[Path]
     entrypoint: Optional[str]
     deployment_params: Optional[DeploymentInputParams]
     force: bool = Field(False, description="Force deploy all flows")
@@ -27,7 +28,7 @@ class Flow(BaseModel):
 
     id: str
     name: str
-    file_path: Optional[str]
+    file_path: Optional[Path]
     deployment_id: str
     deployment_name: str
     version: int

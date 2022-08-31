@@ -1,4 +1,3 @@
-import os
 import logging
 from slugify import slugify
 from pathlib import Path
@@ -35,7 +34,7 @@ class Catalog(metaclass=Singleton):
 
     def __init__(
         self,
-        flows_home_path: str = cfg.FLOWS_HOME,
+        flows_home_path: Path = cfg.FLOWS_HOME,
         storage_type: str = cfg.FLOWS_STORAGE_TYPE,
     ) -> None:
 
@@ -63,7 +62,7 @@ class Catalog(metaclass=Singleton):
             self.catalog[flow_name] = flow
             self.catalog_by_id[flow_data["id"]] = flow
 
-    def set_flows_path(self, new_path: str) -> None:
+    def set_flows_path(self, new_path: Path) -> None:
         # method to use in test
         self.flows_home_path = new_path
 
@@ -80,10 +79,10 @@ class Catalog(metaclass=Singleton):
     def _flow_path_processing(self, flow_path: str) -> str:
 
         # to have absolute path
-        if self.flows_home_path not in flow_path:
-            flow_path = os.path.join(self.flows_home_path, flow_path)
+        if not flow_path.is_relative_to(self.flows_home_path):
+            flow_path = Path(self.flows_home_path) / flow_path
 
-        if not os.path.exists(flow_path):
+        if not flow_path.exists():
             # file does not exist
             raise FlowNotFound(f"Flow path '{flow_path}' does not exist'")
 
@@ -218,7 +217,7 @@ class Catalog(metaclass=Singleton):
 
     def create_flow_file(self, full_flow_data: dict) -> dict:
         flow_file_name = slugify(full_flow_data["name"]).replace("-", "_")
-        full_flow_path = os.path.join(cfg.FLOWS_HOME, f"{flow_file_name}.py")
+        full_flow_path = Path(cfg.FLOWS_HOME) / f"{flow_file_name}.py"
 
         with open(full_flow_path, "w+") as file:
             file.write(full_flow_data["flow_data"])
@@ -290,7 +289,7 @@ class Catalog(metaclass=Singleton):
         return deployment_response
 
     def _get_full_flow_location(self, flow_file_name: str) -> str:
-        return os.path.join(self.flows_home_path, flow_file_name)
+        return Path(self.flows_home_path) / flow_file_name
 
     def process_flows_folder(self) -> List[FlowDataFromFile]:
         """list flows from FLOWS_HOME without register them or load them to Prefect if 'register' True"""
