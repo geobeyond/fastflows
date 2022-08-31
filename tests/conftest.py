@@ -1,5 +1,10 @@
 import pathlib
 import pytest
+from fastflows.core.catalog import Catalog
+
+flows_home_path = pathlib.Path("tests/test_data/flows")
+
+Catalog().set_flows_path(flows_home_path)
 
 
 @pytest.fixture

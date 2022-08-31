@@ -25,7 +25,7 @@ def create_flow_deployment(flow_input: Flow) -> DeploymentResponse:
 
     # upload flow documents to s3
     storage = S3FileSystem(flow_input.name)
-    storage.upload_files(flow_input.flow_base_path)
+    storage.upload_files(flow_input.flow_base_path.as_posix())
 
     # add deployment to Prefect
     deploy = DeploymentSpec(

@@ -11,7 +11,7 @@ router = APIRouter(prefix="/flows", tags=["flows"])
 @router.post("", response_model=List[Flow])
 @handle_rest_errors
 async def create_flow_deployment(
-    flow_deploy_input: Optional[FlowDeployInput] = FlowDeployInput(),
+    flow_deploy_input: FlowDeployInput,
 ) -> List[Flow]:
     """if no input - deploy all flows from FLOWS_HOME"""
     # todo: should we separate routes? 1) create flow 2) create deployment

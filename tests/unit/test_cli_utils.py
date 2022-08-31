@@ -2,9 +2,14 @@ from fastflows.cli.utils import (
     process_parmas_as_a_string_with_dict,
     process_parmas_input_as_a_comma_separated_string,
     process_params_from_str,
+)
+
+from fastflows.utils.core import (
     check_path_is_dir,
 )
 import pytest
+from pathlib import Path
+from typing import Union
 
 
 @pytest.mark.parametrize(
@@ -46,7 +51,7 @@ def test_process_params_from_str(input: str, result: dict):
 @pytest.mark.parametrize(
     "path,result",
     (
-        ["tests/test_data/flows", "tests/test_data/flows"],
+        ["tests/test_data/flows", Path("tests/test_data/flows")],
         ["/not_exist", "Path '/not_exist' does not exist"],
         [
             "tests/test_data/flows/flow_with_params.py",
@@ -54,8 +59,8 @@ def test_process_params_from_str(input: str, result: dict):
         ],
     ),
 )
-def test_check_path_is_dir(path: str, result: str):
-    if "Path" in result:
+def test_check_path_is_dir(path: str, result: Union[Path, str]):
+    if "Path" in str(result):
         with pytest.raises(ValueError) as e:
             check_path_is_dir(path)
         assert result in e.value.args[0]

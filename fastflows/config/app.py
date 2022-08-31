@@ -1,6 +1,7 @@
 import os
 from typing import Optional
 from pydantic import BaseSettings
+from pathlib import Path
 
 
 class Config(BaseSettings):
@@ -39,7 +40,7 @@ class Config(BaseSettings):
     TAGS_PROPERTY: str = "tags"
 
     # path to search flows
-    FLOWS_HOME: str = "flows/"
+    FLOWS_HOME: Path = Path("flows/")
     # type of flows home directory: local, s3, etc. 'local' only supported from start
     FLOWS_STORAGE_TYPE: str = "local"
     FASTFLOWS_CATALOG_CACHE: str = "./flows/.fastflows"
@@ -48,7 +49,7 @@ class Config(BaseSettings):
     FASTFLOWS_PROVIDER_PREPARE_AT_THE_START: int = 1
 
     # logging
-    LOG_LEVEL: str = "DEBUG"
+    LOG_LEVEL: str = "INFO"
     LOG_PATH: str = "/tmp"
     LOG_FILENAME: str = "fastflows.log"
     LOG_ENQUEUE: bool = True

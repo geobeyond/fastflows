@@ -2,11 +2,7 @@ import pytest
 from typer.testing import CliRunner
 
 from fastflows.cli.main import app
-from fastflows.core.catalog import Catalog
 from fastflows.config import app as cfg
-
-
-flows_home_path = "tests/test_data/flows"
 
 
 @pytest.fixture
@@ -15,7 +11,6 @@ def runner():
 
 
 cfg.configuration.FASTFLOW_DEBUG = 1
-Catalog().set_flows_path(flows_home_path)
 
 
 @pytest.fixture

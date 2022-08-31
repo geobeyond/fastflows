@@ -1,6 +1,7 @@
 import pytest
 from typer.testing import CliRunner
-from tests.integration.cli.conftest import flows_home_path, app
+from tests.conftest import flows_home_path
+from tests.integration.cli.conftest import app
 
 
 # todo: need to mock prefect to run it on CI
@@ -14,7 +15,8 @@ def test_flows_not_existed_flow(runner: CliRunner):
 
 def test_flows_existed_flow(runner: CliRunner):
     result = runner.invoke(
-        app, ["flows", "deploy", flows_home_path, "--flow-name", "Simple Flow2"]
+        app,
+        ["flows", "deploy", flows_home_path.as_posix(), "--flow-name", "Simple Flow2"],
     )
     assert result.exit_code == 0
     assert (
@@ -48,6 +50,7 @@ def test_flows_existed_flow_path_with_flow_name_err(runner: CliRunner):
         ],
     )
     assert result.exit_code == 1
+
     assert (
         "Flow with name 'Simple Flow2' was not found in path 'tests/test_data/flows/flow_with_params.py'"
         in result.stdout
