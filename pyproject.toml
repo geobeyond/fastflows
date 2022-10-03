@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fastflows"
-version = "0.1.0"
+version = "0.1.1"
 description = "FastFlows is a FastAPI server & command line tool to comunicate with Prefect 2.0 as a Workflow manager (and in future other systems like Pygeoapi, for example) to deploy, run, track flows and more."
 authors = ["Francesco Bartoli <francesco.bartoli@geobeyond.it>", "Iuliia Volkova <xnuinside@gmail.com>"]
 license = "MIT"
@@ -14,7 +14,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-typer = ">=0.4.1,<0.7.0"
+typer = ">=0.6.1,<0.7.0"
 httpx = "^0.23.0"
 loguru = "^0.6.0"
 pydantic = {extras = ["dotenv"], version = "^1.9.1"}

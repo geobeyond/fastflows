@@ -189,7 +189,6 @@ class Catalog(metaclass=Singleton):
             )
 
         flows_deployed = []
-
         for flow_file in flows_in_folder:
             # if it will be deploy with flow_name - in flows_in_folder will be only one flow with that name
             flow: Flow = self._process_flow_file_deployment(flow_file, flow_input.force)
@@ -238,20 +237,23 @@ class Catalog(metaclass=Singleton):
         if not flow:
             # mean no updates - no need to redeploy
             return
+
         version = self._get_deployment_version(flow, flow_file)
+
         full_flow_data = {}
         full_flow_data.update(flow.dict())
         full_flow_data.update(flow_file.dict())
+
         if not full_flow_data.get("file_path"):
             # mean flow loaded by content with REST API or cli
             self.create_flow_file(full_flow_data)
+
         if not full_flow_data.get("flow_base_path"):
             full_flow_data["flow_base_path"] = str(
                 Path(full_flow_data["file_path"]).parent
             )
         flow_deploy_input = FlowDeployInput(**full_flow_data)
         deployment = self._deploy_flow(flow_deploy_input)
-
         flow = Flow(
             id=flow.id,
             name=flow_file.name,

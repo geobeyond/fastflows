@@ -1,8 +1,13 @@
 # Intro
 
-FastFlows is a **command line tool** & Python **REST API Server** based on FastAPI that provides as set of tools to deploy, run & work with Flows on different workflows managers / orchestrators / process runners.
+FastFlows is a **command line tool** & Python **REST API Server** created with FastAPI under the hood. Fastflows provides a set of tools to deploy, run & work with Flows on different workflows managers / orchestrators / process runners (for example, with Prefect or Pygeoapi).
 
-Right now supported 2 flows Providers / Engines : Prefect 2.0 (https://www.prefect.io/opensource/v2/) and (soon in next release) Pygeoapi Processes (https://docs.pygeoapi.io/en/latest/data-publishing/ogcapi-processes.html)
+Right now supported 2 flows Providers / Engines:
+
+1. Prefect 2.4.5 (https://www.prefect.io/opensource/v2/)
+2. and (soon in next release) Pygeoapi Processes (https://docs.pygeoapi.io/en/latest/data-publishing/ogcapi-processes.html)
+
+Fastflows allow to work with both Providers with same API & command line tool. Also you can work with both of them in same time.
 
 ## Installation
 

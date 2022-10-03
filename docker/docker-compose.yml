@@ -22,7 +22,7 @@ services:
       - prefect
       - postgres
   prefect:
-    image: prefecthq/prefect:2.2.0-python3.9
+    image: prefecthq/prefect:2.4.5-python3.9
     command: prefect orion start --host 0.0.0.0
     restart: always
     environment:
@@ -32,7 +32,7 @@ services:
       - 4200:4200
 
   prefect_work_queue:
-    image: prefecthq/prefect:2.2.0-python3.9
+    image: prefecthq/prefect:2.4.5-python3.9
     entrypoint: prefect work-queue create base-queue
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
@@ -42,7 +42,7 @@ services:
       - postgres
 
   prefect_agent:
-    image: prefecthq/prefect:2.2.0-python3.9
+    image: prefecthq/prefect:2.4.5-python3.9
     command: prefect agent start base-queue
     environment:
       - EXTRA_PIP_PACKAGES=s3fs
