@@ -121,7 +121,7 @@ Address to connect Minio should be the same for command line (when you create de
 
 ```console
 
-    docker-compose -f docker/minio.yaml
+    docker-compose -f docker/minio.yaml up
 
 ```
 

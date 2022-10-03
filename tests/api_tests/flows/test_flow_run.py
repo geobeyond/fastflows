@@ -74,3 +74,13 @@ def test_get_flow_run_graph(flow_run: FlowRunResponse, client: TestClient) -> No
     assert response.status_code == 200
     # need to wait to complete flow for graph to be generated
     assert response_body == []
+
+
+def test_flow_run_by_name_with_params_file_path(client: TestClient) -> None:
+    params = {"path_to_file": "test.txt"}
+    response = client.post("/flows/name/file_reader", json={"parameters": params})
+    response_body = response.json()
+    assert response.status_code == 200
+    assert response_body["id"]
+    assert response_body["parameters"] == params
+    assert response_body["state"]["type"] == "SCHEDULED"

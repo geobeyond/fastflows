@@ -24,7 +24,7 @@ spec:
             ]
       containers:
         - name: api
-          image: prefecthq/prefect:2.2.0-python3.9
+          image: prefecthq/prefect:2.4.5-python3.9
           command:
             [
               "prefect",
@@ -45,7 +45,7 @@ spec:
                   name: postgres-credentials
                   key: POSTGRES_URI
         - name: agent
-          image: prefecthq/prefect:2.2.0-python3.9
+          image: prefecthq/prefect:2.4.5-python3.9
           command: ["prefect", "agent", "start", "kubernetes"]
           imagePullPolicy: "IfNotPresent"
           env:
