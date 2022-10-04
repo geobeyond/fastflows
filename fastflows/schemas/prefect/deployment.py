@@ -17,6 +17,7 @@ class DeploymentInputParams(BaseModel):
     is_schedule_active: bool = True
     parameters: Optional[dict] = {}
     version: Optional[Union[int, str]]
+    work_queue_name: Optional[str] = cfg.PREFECT_QUEUE
     tags: List[str] = Field(default_factory=list)
 
 

@@ -184,9 +184,3 @@ Settings
     }
 
 ```
-
-Steps to deploy flow:
-
-1. Create remote-file-system block
-2. Build deployment: create files & upload to remote-file-system
-3. Apply deployment - create deployment in UI as Deployment

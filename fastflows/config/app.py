@@ -19,8 +19,10 @@ class Config(BaseSettings):
     PREFECT_STORAGE_BASEPATH: str = "s3://test-bucket"
 
     # for this name Fastflows will check Block to use to upload flows in Prefect
-    PREFECT_STORAGE_NAME: str = "minio6"
+    PREFECT_STORAGE_NAME: str = "minio"
 
+    # default queue name to use in deployment
+    PREFECT_QUEUE: str = "default"
     # for remote-file-system
     # should be a json-like string in env variables
     PREFECT_STORAGE_SETTINGS: dict = {
