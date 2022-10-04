@@ -20,6 +20,7 @@ class FlowDeployInput(BaseModel):
     entrypoint: Optional[str]
     deployment_params: Optional[DeploymentInputParams]
     force: bool = Field(False, description="Force deploy all flows")
+    work_queue_name: Optional[str] = cfg.PREFECT_QUEUE
 
 
 # Flow Data after communication with Prefect

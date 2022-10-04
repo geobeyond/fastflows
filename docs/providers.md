@@ -2,7 +2,7 @@
 
 #### Prefect
 
-Fastflows support Prefect API version 2.4.5
+Fastflows support Prefect API version 2.4.1
 
 #### Pygeoapi
 
