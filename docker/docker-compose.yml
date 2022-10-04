@@ -33,7 +33,7 @@ services:
 
   prefect_work_queue:
     image: prefecthq/prefect:2.3.0-python3.9
-    entrypoint: prefect work-queue create base-queue
+    entrypoint: prefect work-queue create default
     environment:
       - PREFECT_API_URL=http://prefect:4200/api
     restart: on-failure
@@ -43,7 +43,7 @@ services:
 
   prefect_agent:
     image: prefecthq/prefect:2.3.0-python3.9
-    command: prefect agent start base-queue
+    command: prefect agent start default
     environment:
       - EXTRA_PIP_PACKAGES=s3fs
       - PREFECT_API_URL=http://prefect:4200/api
