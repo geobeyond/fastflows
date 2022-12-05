@@ -141,7 +141,7 @@ Set up them in `FASTFLOWS__PREFECT__STORAGE__SETTINGS__KEY` and `FASTFLOWS__PREF
 
 ```console
 
-    docker-compose -f ./docker/docker-compose.yml up  --build
+    docker-compose --env-file docker/.env -f ./docker/docker-compose.yml up  --build
 
 ```
 

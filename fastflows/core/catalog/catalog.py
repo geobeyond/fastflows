@@ -2,7 +2,10 @@ import logging
 from slugify import slugify
 from pathlib import Path
 from fastflows.errors import FlowNotFound
-from fastflows.config.app import settings
+from fastflows.config.app import (
+    FastFlowsFlowStorageType,
+    settings,
+)
 from fastflows.core.deployment import (
     get_last_deployments_per_flow,
     create_flow_deployment,
@@ -29,7 +32,7 @@ class Catalog(metaclass=Singleton):
 
     storages = {
         # add here API to work with flows on S3, or any other store
-        "local": LocalStorage
+        FastFlowsFlowStorageType.LOCAL: LocalStorage,
     }
 
     def __init__(
