@@ -135,7 +135,7 @@ Do it with UI http://127.0.0.1:9001/.
 
 You should get "key" & "secret", something like this: "0xoznLEXV3JHiOKx" & "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs"
 
-Set up them in PREFECT_STORAGE_SETTINGS in docker-compose.yml file
+Set up them in `FASTFLOWS__PREFECT__STORAGE__SETTINGS__KEY` and `FASTFLOWS__PREFECT__STORAGE__SETTINGS__SECRET` in docker-compose.yml file
 
 ### 4. Up & Run Prefect & Fastflows in docker-compose
 

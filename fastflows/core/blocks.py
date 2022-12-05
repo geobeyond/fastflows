@@ -1,5 +1,8 @@
 from fastflows.providers import provider
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import (
+    PrefectStorageBlockType,
+    settings,
+)
 from fastflows.schemas.prefect.block import BlockDocumentInput, BlockTypeResponse
 from slugify import slugify
 from uuid import uuid1
@@ -7,20 +10,20 @@ from fastflows.errors import FastFlowException
 
 
 def get_storage_block_type() -> BlockTypeResponse:
-    prefect_storage_type = cfg.PREFECT_STORAGE_BLOCK_TYPE
+    prefect_storage_type = str(settings.PREFECT.STORAGE.BLOCK_TYPE)
     block_type = provider.get_block_by_slug(prefect_storage_type)
     return block_type
 
 
 def get_infrastructure_block_type() -> BlockTypeResponse:
-    prefect_infrustructure_type = cfg.PREFECT_INFRASTRUCTURE_BLOCK_TYPE
+    prefect_infrustructure_type = str(settings.PREFECT.INFRASTRUCTURE_BLOCK_TYPE)
     block_type = provider.get_block_by_slug(prefect_infrustructure_type)
     return block_type
 
 
 def get_block_name(postfix: str) -> str:
     postfix = slugify(postfix)
-    return f"{cfg.PREFECT_STORAGE_NAME}-{postfix}".lower()
+    return f"{settings.PREFECT.STORAGE.NAME}-{postfix}".lower()
 
 
 def get_or_create_block_document(postfix: str) -> str:
@@ -45,12 +48,21 @@ def create_storage_block_document(postfix: str) -> str:
         0
     ].id
 
-    data = {"basepath": f"{cfg.PREFECT_STORAGE_BASEPATH}/{postfix}"}
+    data = {"basepath": f"{settings.PREFECT.STORAGE.BASEPATH}/{postfix}"}
 
     block_name = get_block_name(postfix)
-    if cfg.PREFECT_STORAGE_BLOCK_TYPE == "remote-file-system":
+    if (
+        settings.PREFECT.STORAGE.BLOCK_TYPE
+        == PrefectStorageBlockType.REMOTE_FILE_SYSTEM
+    ):
         # setting should be provided for connection purposes
-        data["settings"] = cfg.PREFECT_STORAGE_SETTINGS
+        data["settings"] = {
+            "key": settings.PREFECT.STORAGE.SETTINGS.KEY,
+            "secret": settings.PREFECT.STORAGE.SETTINGS.SECRET,
+            "client_kwargs": {
+                "endpoint_url": settings.PREFECT.STORAGE.SETTINGS.ENDPOINT_URL
+            },
+        }
 
     block_document = BlockDocumentInput(
         block_type_id=block_type_id,

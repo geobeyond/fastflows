@@ -6,7 +6,7 @@ from fastflows.core.blocks import get_or_create_block_document
 from fastflows.core.storage import S3FileSystem
 from fastflows.schemas.prefect.flow import Flow
 from fastflows.schemas.prefect.deployment import DeploymentSpec
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 def get_last_deployments_per_flow() -> Dict[str, DeploymentResponse]:
@@ -34,6 +34,6 @@ def create_flow_deployment(flow_input: Flow) -> DeploymentResponse:
         entrypoint=flow_input.entrypoint,
         flow_id=flow_input.id,
         flow_data=flow_input.flow_data,
-        work_queue_name=flow_input.work_queue_name or cfg.PREFECT_QUEUE,
+        work_queue_name=flow_input.work_queue_name or settings.PREFECT.QUEUE,
     )
     return provider.deploy_flow(deploy)

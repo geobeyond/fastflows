@@ -2,7 +2,7 @@ import logging
 from slugify import slugify
 from pathlib import Path
 from fastflows.errors import FlowNotFound
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 from fastflows.core.deployment import (
     get_last_deployments_per_flow,
     create_flow_deployment,
@@ -34,8 +34,8 @@ class Catalog(metaclass=Singleton):
 
     def __init__(
         self,
-        flows_home_path: Path = cfg.FLOWS_HOME,
-        storage_type: str = cfg.FLOWS_STORAGE_TYPE,
+        flows_home_path: Path = settings.FLOWS_HOME,
+        storage_type: str = settings.FLOWS_STORAGE_TYPE,
     ) -> None:
 
         self.flows_home_path = flows_home_path
@@ -138,8 +138,8 @@ class Catalog(metaclass=Singleton):
 
     def _get_version_from_tag(self, tags: List[str]) -> int:
         for tag in tags:
-            if tag.startswith(cfg.VERSION_PREFIX):
-                version = tag.split(cfg.TAG_DELIMITER)[1]
+            if tag.startswith(settings.VERSION_PREFIX):
+                version = tag.split(settings.TAG_DELIMITER)[1]
                 return int(version)
         else:
             return 1
@@ -216,13 +216,13 @@ class Catalog(metaclass=Singleton):
 
     def create_flow_file(self, full_flow_data: dict) -> dict:
         flow_file_name = slugify(full_flow_data["name"]).replace("-", "_")
-        full_flow_path = Path(cfg.FLOWS_HOME) / f"{flow_file_name}.py"
+        full_flow_path = Path(settings.FLOWS_HOME) / f"{flow_file_name}.py"
 
         with open(full_flow_path, "w+") as file:
             file.write(full_flow_data["flow_data"])
 
         full_flow_data["file_path"] = full_flow_path
-        full_flow_data["flow_base_path"] = cfg.FLOWS_HOME
+        full_flow_data["flow_base_path"] = settings.FLOWS_HOME
 
         return full_flow_data
 

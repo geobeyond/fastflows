@@ -1,5 +1,5 @@
 import fsspec
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 class S3FileSystem:
@@ -7,15 +7,17 @@ class S3FileSystem:
 
         self.fs = fsspec.filesystem(
             "s3",
-            key=cfg.PREFECT_STORAGE_SETTINGS["key"],
-            secret=cfg.PREFECT_STORAGE_SETTINGS["secret"],
-            client_kwargs=cfg.PREFECT_STORAGE_SETTINGS["client_kwargs"],
+            key=settings.PREFECT.STORAGE.SETTINGS.KEY,
+            secret=settings.PREFECT.STORAGE.SETTINGS.SECRET,
+            client_kwargs={
+                "endpoint_url": settings.PREFECT.STORAGE.SETTINGS.ENDPOINT_URL,
+            },
         )
         self.target_path = target_path
 
     def upload_files(self, local_path: str):
         self.fs.upload(
             local_path,
-            f"{cfg.PREFECT_STORAGE_BASEPATH}/{self.target_path}",
+            f"{settings.PREFECT.STORAGE.BASEPATH}/{self.target_path}",
             recursive=True,
         )

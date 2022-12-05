@@ -4,7 +4,7 @@ from fastflows.schemas.prefect.flow_run import FlowRunResponse, FlowRunInput
 from fastflows.errors import FlowNotFound
 from fastflows.core.catalog.catalog import catalog, Catalog, catalog_by_id
 from fastflows.providers import provider
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 def get_flow_id(flow_name: str, by_id: bool):
@@ -64,7 +64,7 @@ def get_flow_runs_list(flow_name: str, by_id: bool) -> List[FlowRunResponse]:
     return provider.list_flow_runs(flow_id)
 
 
-def list_flows(flows_home_path: Optional[str] = cfg.FLOWS_HOME) -> List[Flow]:
+def list_flows(flows_home_path: Optional[str] = settings.FLOWS_HOME) -> List[Flow]:
     # they cannot be registered in Prefect, just list from FLOWS_HOME
     Catalog(flows_home_path=flows_home_path).register_and_deploy()
     return list(catalog.keys())

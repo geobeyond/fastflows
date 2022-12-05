@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 from rich import print as rprint
 from typing import Optional
-from fastflows.config.app import configuration
+from fastflows.config.app import settings
 from fastflows.schemas.prefect.flow import FlowDeployInput
 from fastflows.schemas.prefect.flow_run import FlowRunInput
 from fastflows.schemas.prefect.deployment import DeploymentInputParams
@@ -54,7 +54,7 @@ def run(
 
 @flows_app.command()
 @catch_exceptions
-def list(flow_path: Optional[Path] = configuration.FLOWS_HOME):
+def list(flow_path: Optional[Path] = settings.FLOWS_HOME):
     """List all flows from FLOWS_HOME"""
     typer.echo("\nAll flows from FLOWS_HOME: \n")
     typer.echo(f"\nAvailable flows: {list_flows(flows_home_path=flow_path)}\n")
@@ -64,7 +64,7 @@ def list(flow_path: Optional[Path] = configuration.FLOWS_HOME):
 @catch_exceptions
 def deploy(
     flows_home_path: Path = typer.Argument(
-        configuration.FLOWS_HOME, callback=check_path_is_dir
+        settings.FLOWS_HOME, callback=check_path_is_dir
     ),
     flow_name: Optional[str] = typer.Option(None, help="Flow name to deploy"),
     flow_path: Optional[Path] = typer.Option(

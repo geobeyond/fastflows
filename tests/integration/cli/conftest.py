@@ -10,7 +10,7 @@ def runner():
     return CliRunner()
 
 
-cfg.configuration.FASTFLOW_DEBUG = 1
+cfg.settings.DEBUG = True
 
 
 @pytest.fixture
