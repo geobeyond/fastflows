@@ -38,6 +38,9 @@ mkdocs-material = "^8.5.10"
 [tool.poetry.scripts]
 fastflows = "fastflows.cli.main:app"
 
+[tool.poetry.group.dev.dependencies]
+safety = "^2.3.3"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
