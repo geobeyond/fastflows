@@ -5,7 +5,7 @@ from time import time
 from pydantic import Field, validator, BaseModel, root_validator
 from typing import List, Optional, Union
 from fastflows.schemas.prefect.misc import get_hash_from_data, Schedule
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 class DeploymentInputParams(BaseModel):
@@ -17,7 +17,7 @@ class DeploymentInputParams(BaseModel):
     is_schedule_active: bool = True
     parameters: Optional[dict] = {}
     version: Optional[Union[int, str]]
-    work_queue_name: Optional[str] = cfg.PREFECT_QUEUE
+    work_queue_name: Optional[str] = settings.PREFECT.QUEUE
     tags: List[str] = Field(default_factory=list)
 
 
@@ -54,7 +54,7 @@ class DeploymentSpec(DeploymentInputParams):
 
         values["tags"].extend(
             [
-                f'{cfg.VERSION_PREFIX}{cfg.TAG_DELIMITER}{values["version"]}',
+                f'{settings.VERSION_PREFIX}{settings.TAG_DELIMITER}{values["version"]}',
                 f'ts:{str(time()).split(".")[0]}',
             ]
         )

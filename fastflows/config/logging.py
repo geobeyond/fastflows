@@ -3,7 +3,7 @@ import logging
 import sys
 from pathlib import Path
 
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 from fastflows.schemas.logging import LoggerModel
 from fastflows.schemas.logging import LoggingBase
 from loguru import logger
@@ -100,12 +100,12 @@ def create_logger(name: str):
     logger = logging.getLogger(name)
     config = LoggerModel(
         logger=LoggingBase(
-            path=Path(cfg.LOG_PATH) / cfg.LOG_FILENAME,
-            level=cfg.LOG_LEVEL,
-            enqueue=cfg.LOG_ENQUEUE,
-            retention=cfg.LOG_RETENTION,
-            rotation=cfg.LOG_ROTATION,
-            format_=cfg.LOG_FORMAT,
+            path=Path(settings.LOGGING.PATH) / settings.LOGGING.FILENAME,
+            level=settings.LOGGING.LEVEL,
+            enqueue=settings.LOGGING.ENQUEUE,
+            retention=settings.LOGGING.RETENTION,
+            rotation=settings.LOGGING.ROTATION,
+            format_=settings.LOGGING.FORMAT,
         ),
     )
     logger = CustomizeLogger.make_logger(config)

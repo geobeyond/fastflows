@@ -1,71 +1,71 @@
+import enum
 import os
 from typing import Optional
-from pydantic import BaseSettings
+from pydantic import BaseModel, BaseSettings
 from pathlib import Path
 
 
-class Config(BaseSettings):
+class PrefectStorageBlockType(enum.Enum):
+    LOCAL_FILE_SYSTEM = "local-file-system"
+    REMOTE_FILE_SYSTEM = "remote-file-system"
+    S3 = "s3"
+    GCS = "gcs"
+    AZURE = "azure"
 
-    ENV_NAME: Optional[str] = os.environ.get("ENV_NAME")
 
-    # each environment read variables with own prefix
-    # to override settings use environment variables
-    # with prefix from 'env_prefix' in config
-    PREFECT_URI: str = "http://localhost:8080"
-    PREFECT_API_TIMEOUT: int = 120
-    # must be one of 'local-file-system', 'remote-file-system', 's3', 'gcs', 'azure'"
-    PREFECT_STORAGE_BLOCK_TYPE: str = "remote-file-system"
-    # it can be main bucket or main path, flows files will be stored in paths like $PREFECT_STORAGE_BASEPATH/flow-name
-    PREFECT_STORAGE_BASEPATH: str = "s3://test-bucket"
+class PrefectInfrastructureBlockType(enum.Enum):
+    PROCESS = "process"
 
+
+class FastFlowsFlowStorageType(enum.Enum):
+    LOCAL = "local"
+
+
+class _PrefectRemoteStorageExtraSettings(BaseModel):
+    KEY: str = "0xoznLEXV3JHiOKx"
+    SECRET: str = "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs"
+    ENDPOINT_URL: str = "http://nginx:9000"
+
+
+class _PrefectStorage(BaseModel):
+    # it can be main bucket or main path, flows files will be stored in paths like $STORAGE_BASEPATH/flow-name
+    BASEPATH: str = "s3://test-bucket"
+    BLOCK_TYPE: PrefectStorageBlockType = PrefectStorageBlockType.REMOTE_FILE_SYSTEM
     # for this name Fastflows will check Block to use to upload flows in Prefect
-    PREFECT_STORAGE_NAME: str = "minio"
-
-    # default queue name to use in deployment
-    PREFECT_QUEUE: str = "default"
+    NAME: str = "minio"
     # for remote-file-system
     # should be a json-like string in env variables
-    PREFECT_STORAGE_SETTINGS: dict = {
-        "key": "0xoznLEXV3JHiOKx",
-        "secret": "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs",
-        "client_kwargs": {"endpoint_url": "http://nginx:9000"},
-    }
+    SETTINGS = _PrefectRemoteStorageExtraSettings()
 
-    # must be on of "process"
-    PREFECT_INFRASTRUCTURE_BLOCK_TYPE: str = "process"
-    # PYGEOAPI URI is used to run flows if provder == Pygeoapi
-    PYGEOAPI_URI: str = "http://localhost:8080"
-    # config for tags information & parsing flows properties
-    VERSION_PREFIX: str = "ver"
-    TAG_DELIMITER: str = ":"
-    SCHEDULE_PROPERTY: str = "schedule"
-    TAGS_PROPERTY: str = "tags"
 
-    # path to search flows
-    FLOWS_HOME: Path = Path("flows/")
-    # type of flows home directory: local, s3, etc. 'local' only supported from start
-    FLOWS_STORAGE_TYPE: str = "local"
-    FASTFLOWS_CATALOG_CACHE: str = "./flows/.fastflows"
-    FASTFLOWS_AUTO_DEPLOYMENT: int = 1
-    FASTFLOW_DEBUG: int = 1
-    FASTFLOWS_PROVIDER_PREPARE_AT_THE_START: int = 1
+class _PrefectSettings(BaseModel):
+    API_TIMEOUT: int = 120
+    INFRASTRUCTURE_BLOCK_TYPE: PrefectInfrastructureBlockType = (
+        PrefectInfrastructureBlockType.PROCESS
+    )
+    QUEUE: str = "default"
+    URI: str = "http://localhost:8080"
+    STORAGE: _PrefectStorage = _PrefectStorage()
 
-    # logging
-    LOG_LEVEL: str = "INFO"
-    LOG_PATH: str = "/tmp"
-    LOG_FILENAME: str = "fastflows.log"
-    LOG_ENQUEUE: bool = True
-    LOG_ROTATION: str = "1 days"
-    LOG_RETENTION: str = "1 months"
-    LOG_FORMAT: str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> [id:{extra[request_id]}] - <level>{message}</level>"
 
-    # uvicorn setting
-    FASTFLOWS_HOST: str = "0.0.0.0"
-    FASTFLOWS_PORT: int = 5010
+class _LoggingSettings(BaseModel):
+    ENQUEUE: bool = True
+    FILENAME: str = "fastflows.log"
+    FORMAT: str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> [id:{extra[request_id]}] - <level>{message}</level>"
+    LEVEL: str = "INFO"
+    PATH: str = "/tmp"
+    RETENTION: str = "1 months"
+    ROTATION: str = "1 days"
+
+
+class _UvicornSettings(BaseModel):
+    HOST: str = "0.0.0.0"
+    PORT: int = 5010
     RELOAD: bool = False
     ACCESS_LOG: bool = False
-    ROOT_PATH: str = ""
 
+
+class _AuthSettings(BaseModel):
     # auth
     # for test purposes values taken from tests in official repo:
     # https://github.com/busykoala/fastapi-opa/blob/a456f4e6f8f6cb90ca386bbcd5909af3ea44d646/tests/utils.py#L63
@@ -75,14 +75,35 @@ class Config(BaseSettings):
     OIDC_CLIENT_ID: Optional[str] = "example-client"
     OIDC_CLIENT_SECRET: Optional[str] = "secret"
 
-    # env settings
+
+class FastFlowsSettings(BaseSettings):
+    AUTH: _AuthSettings = _AuthSettings()
+    AUTO_DEPLOYMENT: bool = True
     AWS_LAMBDA_DEPLOY: bool = False
+    CATALOG_CACHE: str = "./flows/.fastflows"
+    DEBUG: bool = True
+    FLOWS_HOME: Path = Path("flows/")
+    FLOWS_STORAGE_TYPE: FastFlowsFlowStorageType = FastFlowsFlowStorageType.LOCAL
+    PREFECT: _PrefectSettings = _PrefectSettings()
+    PROVIDER_PREPARE_AT_THE_START: bool = True
+    PYGEOAPI_URI: str = "http://localhost:8080"
+    SCHEDULE_PROPERTY: str = "schedule"
+    ROOT_PATH: str = ""
+    TAG_DELIMITER: str = ":"
+    TAGS_PROPERTY: str = "tags"
+    VERSION_PREFIX: str = "ver"
+    LOGGING: _LoggingSettings = _LoggingSettings()
+    UVICORN: _UvicornSettings = _UvicornSettings()
 
     class Config:
-        env_file: str = ".env"
-        env_prefix: str = (
-            f'{os.environ.get("ENV_NAME")}_' if os.environ.get("ENV_NAME") else ""
+        env_prefix = "FASTFLOWS__"
+        env_prefix = (
+            f"{env_name}__FASTFLOWS__"
+            if (env_name := os.environ.get("ENV_NAME")) is not None
+            else "FASTFLOWS__"
         )
+        case_sensitive = True
+        env_nested_delimiter = "__"
 
 
-configuration = Config()
+settings = FastFlowsSettings()

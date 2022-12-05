@@ -8,7 +8,7 @@ from fastflows.schemas.prefect.flow_data import (
     Schedule,
 )
 from typing import List, Optional, Tuple
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
 
 
@@ -44,7 +44,7 @@ class FlowFileReader:
     def _exctract_schedule_data(self):
         """expected comment in flow: `# schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC`"""
         schedules = []
-        key = cfg.SCHEDULE_PROPERTY
+        key = settings.SCHEDULE_PROPERTY
         for num, line in self._get_data_from_comment(key):
             if line:
                 schedule = parse_schedule_line(line)
@@ -55,7 +55,7 @@ class FlowFileReader:
     def _exctract_tags(self):
         """expected comment in flow: `# tags: data_flow, some_tag`"""
         exctracted_tags = []
-        key = cfg.TAGS_PROPERTY
+        key = settings.TAGS_PROPERTY
         for num, line in self._get_data_from_comment(key):
             tags = parse_tags_line(line)
             if tags:

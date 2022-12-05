@@ -5,7 +5,7 @@ from ast import literal_eval
 from typing import Optional
 from functools import wraps
 import traceback
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 def process_parmas_input_as_a_comma_separated_string(params: str) -> dict:
@@ -61,7 +61,7 @@ def catch_exceptions(func):
             result = func(*args, **kwargs)
             return result
         except Exception as e:
-            if cfg.FASTFLOW_DEBUG == 1:
+            if settings.DEBUG:
                 typer.echo(traceback.format_exc())
             message = f"\n{e.args[0]}"
             typer.secho(message, fg=typer.colors.RED, err=True)

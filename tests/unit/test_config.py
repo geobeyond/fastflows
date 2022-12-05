@@ -7,7 +7,7 @@ import importlib
     os.environ,
     {
         "ENV_NAME": "dev",
-        "dev_PREFECT_URI": "http://dev-test-url",
+        "dev__FASTFLOWS__PREFECT__URI": "http://dev-test-url",
     },
 )
 def test_define_config_based_ENV_NAME():
@@ -16,16 +16,15 @@ def test_define_config_based_ENV_NAME():
 
     importlib.reload(app)
 
-    Config = app.Config
-    assert Config().ENV_NAME == "dev"
-    assert Config().PREFECT_URI == "http://dev-test-url"
+    FastFlowsSettings = app.FastFlowsSettings
+    assert FastFlowsSettings().PREFECT.URI == "http://dev-test-url"
 
 
 @mock.patch.dict(
     os.environ,
     {
         "ENV_NAME": "ANY",
-        "ANY_PREFECT_URI": "http://ANY-test-url",
+        "ANY__FASTFLOWS__PREFECT__URI": "http://ANY-test-url",
     },
 )
 def test_define_config_based_ENV_NAME_2():
@@ -34,6 +33,5 @@ def test_define_config_based_ENV_NAME_2():
 
     importlib.reload(app)
 
-    Config = app.Config
-    assert Config().ENV_NAME == "ANY"
-    assert Config().PREFECT_URI == "http://ANY-test-url"
+    FastFlowsSettings = app.FastFlowsSettings
+    assert FastFlowsSettings().PREFECT.URI == "http://ANY-test-url"

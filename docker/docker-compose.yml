@@ -10,7 +10,7 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     ports:
-      - ${FASTFLOWS_PORT}:${FASTFLOWS_PORT}
+      - ${FASTFLOWS__UVICORN__PORT}:${FASTFLOWS__UVICORN__PORT}
     volumes:
       - .:/app/src
       - ../flows:/app/flows

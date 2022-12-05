@@ -7,22 +7,22 @@ To start work with FastFlows you should define at least 2 environment variables:
 ```console
 
     # Prefect API Server address
-    PREFECT_URI=http://localhost:4200
+    FASTFLOWS__PREFECT_URI=http://localhost:4200
 
     # Path to folder with flows
-    FLOWS_HOME=flows
+    FASTFLOWS__FLOWS_HOME=flows
 
 ```
 
-If you want to define variables with env prefix, for example, like 'LOCAL_PREFECT_URI' or 'DEV_PREFECT_URI' you can use environment variable 'ENV_NAME'
+If you want to define variables with env prefix, for example, like 'LOCAL**FASTFLOWS**PREFECT**URI' or 'DEV**FASTFLOWS**PREFECT**URI' you can use environment variable 'ENV_NAME'
 
 If Fastflow will see 'ENV_NAME' variable in environment - it will search for variables with prefix defined in this ENV_NAME, for example:
 
 if ENV_NAME = 'LOCAL'
 
-Fastflows will read variables like LOCAL_PREFECT_URI and LOCAL_FLOWS_HOME,
+Fastflows will read variables like LOCAL**FASTFLOWS**PREFECT**URI and LOCAL**FASTFLOWS\_\_FLOWS_HOME,
 
-if ENV_NAME = 'dev', then fastflow will expect variables like 'dev_PREFECT_URI' and 'dev_FLOWS_HOME'
+if ENV_NAME = 'dev', then fastflow will expect variables like 'dev**FASTFLOWS**PREFECT_URI' and 'dev**FASTFLOWS**FLOWS_HOME'
 
 ### How to run FastFlows with Prefect cluster
 
@@ -52,6 +52,6 @@ Deployment of Flows can be done by FastFlows automatically: if there is a new fl
 
 ```console
 
-    FASTFLOWS_AUTO_DEPLOYMENT = 0
+    FASTFLOWS__AUTO_DEPLOYMENT = 0
 
 ```

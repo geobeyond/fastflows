@@ -1,6 +1,6 @@
 import os
 import json
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 
 
 class CatalogCache:
@@ -12,16 +12,16 @@ class CatalogCache:
 
     def check_or_create_home_folder(self) -> None:
 
-        if not cfg.FLOWS_HOME.exists():
-            os.makedirs(cfg.FLOWS_HOME, exist_ok=True)
+        if not settings.FLOWS_HOME.exists():
+            os.makedirs(settings.FLOWS_HOME, exist_ok=True)
 
     def read(self) -> None:
         self.check_or_create_home_folder()
         try:
-            with open(cfg.FASTFLOWS_CATALOG_CACHE, "r") as f:
+            with open(settings.CATALOG_CACHE, "r") as f:
                 raw_data = f.read()
         except IOError:
-            with open(cfg.FASTFLOWS_CATALOG_CACHE, "w+") as f:
+            with open(settings.CATALOG_CACHE, "w+") as f:
                 f.write("")
                 raw_data = ""
 
@@ -42,7 +42,7 @@ class CatalogCache:
     def write(self, catalog_data: dict) -> None:
         data = self.catalog_dict_to_cache_str(catalog_data)
 
-        with open(cfg.FASTFLOWS_CATALOG_CACHE, "w") as f:
+        with open(settings.CATALOG_CACHE, "w") as f:
             f.write(data)
 
     def catalog_dict_to_cache_str(self, data: dict) -> str:

@@ -72,11 +72,11 @@ spec:
           ports:
             - containerPort: 5010
           env:
-            - name: PREFECT_URI
+            - name: FASTFLOWS__PREFECT__URI
               value: http://orion:4200
-            - name: FLOWS_HOME
+            - name: FASTFLOWS__FLOWS_HOME
               value: "/flows"
-            - name: FASTFLOWS_PORT
+            - name: FASTFLOWS__UVICORN__PORT
               value: "5010"
           command: ["fastflows", "server"]
           volumeMounts:

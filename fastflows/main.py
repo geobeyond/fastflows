@@ -4,7 +4,7 @@ import logging
 import loguru
 import uvicorn
 from time import sleep
-from fastflows.config.app import configuration as cfg
+from fastflows.config.app import settings
 from fastflows.config.auth import opa_config
 from fastflows.config.logging import create_logger
 from fastflows.utils.app_exceptions import app_exception_handler
@@ -35,7 +35,7 @@ class FastFlowsAPI(FastAPI):
 
 def create_app() -> FastFlowsAPI:
     """Handle application creation."""
-    app = FastFlowsAPI(title="FastFlowsApi", root_path=cfg.ROOT_PATH, debug=True)
+    app = FastFlowsAPI(title="FastFlowsApi", root_path=settings.ROOT_PATH, debug=True)
 
     # Set all CORS enabled origins
     app.add_middleware(
@@ -58,7 +58,7 @@ def create_app() -> FastFlowsAPI:
     async def custom_app_exception_handler(request, e):
         return await app_exception_handler(request, e)
 
-    if cfg.OPA_URL:
+    if settings.AUTH.OPA_URL:
         app.add_middleware(OPAMiddleware, config=opa_config)
 
     app.logger = create_logger(name="app.main")
@@ -72,10 +72,10 @@ app = create_app()
 @app.on_event("startup")
 async def startup_event():
 
-    if cfg.FASTFLOWS_PROVIDER_PREPARE_AT_THE_START:
+    if settings.PROVIDER_PREPARE_AT_THE_START:
         provider.healthcheck()
 
-    if cfg.FASTFLOWS_AUTO_DEPLOYMENT == 1:
+    if settings.AUTO_DEPLOYMENT:
         logging.info(f"Register Flows in {provider.type.capitalize()} provider")
         try:
             Catalog().register_and_deploy()
@@ -93,14 +93,14 @@ app.include_router(flow_runs.router)
 def app_run():
     uvicorn.run(
         "fastflows.main:app",
-        host=cfg.FASTFLOWS_HOST,
-        port=cfg.FASTFLOWS_PORT,
-        reload=cfg.RELOAD,
-        access_log=cfg.ACCESS_LOG,
+        host=settings.UVICORN.HOST,
+        port=settings.UVICORN.PORT,
+        reload=settings.UVICORN.RELOAD,
+        access_log=settings.UVICORN.ACCESS_LOG,
     )
 
 
-if cfg.AWS_LAMBDA_DEPLOY:
+if settings.AWS_LAMBDA_DEPLOY:
     # to make it work with Amazon Lambda,
     # we create a handler object
     handler = Mangum(app)
