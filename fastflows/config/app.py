@@ -1,8 +1,9 @@
 import enum
 import os
-from typing import Optional
-from pydantic import BaseModel, BaseSettings
 from pathlib import Path
+from typing import Optional
+
+from pydantic import BaseModel, BaseSettings
 
 
 class PrefectStorageBlockType(enum.Enum):
@@ -22,6 +23,8 @@ class FastFlowsFlowStorageType(enum.Enum):
 
 
 class _PrefectRemoteStorageExtraSettings(BaseModel):
+    """Settings useful for using prefect's `remote-file-system` storage block"""
+
     KEY: str = "0xoznLEXV3JHiOKx"
     SECRET: str = "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs"
     ENDPOINT_URL: str = "http://nginx:9000"
@@ -51,7 +54,11 @@ class _PrefectSettings(BaseModel):
 class _LoggingSettings(BaseModel):
     ENQUEUE: bool = True
     FILENAME: str = "fastflows.log"
-    FORMAT: str = "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> [id:{extra[request_id]}] - <level>{message}</level>"
+    FORMAT: str = (
+        "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | "
+        "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> "
+        "[id:{extra[request_id]}] - <level>{message}</level>"
+    )
     LEVEL: str = "INFO"
     PATH: str = "/tmp"
     RETENTION: str = "1 months"
@@ -96,14 +103,13 @@ class FastFlowsSettings(BaseSettings):
     UVICORN: _UvicornSettings = _UvicornSettings()
 
     class Config:
-        env_prefix = "FASTFLOWS__"
+        case_sensitive = True
+        env_nested_delimiter = "__"
         env_prefix = (
             f"{env_name}__FASTFLOWS__"
             if (env_name := os.environ.get("ENV_NAME")) is not None
             else "FASTFLOWS__"
         )
-        case_sensitive = True
-        env_nested_delimiter = "__"
 
 
 settings = FastFlowsSettings()
