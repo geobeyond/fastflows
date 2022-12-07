@@ -5,3 +5,5 @@ dist/
 .github
 examples/
 tests/
+
+.idea
