@@ -6,4 +6,5 @@ dist/
 examples/
 tests/
 
+.env
 .idea
