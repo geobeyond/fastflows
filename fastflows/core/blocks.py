@@ -1,8 +1,5 @@
 from fastflows.providers import provider
-from fastflows.config.app import (
-    PrefectStorageBlockType,
-    settings,
-)
+from fastflows.config.app import settings
 from fastflows.schemas.prefect.block import BlockDocumentInput, BlockTypeResponse
 from slugify import slugify
 from uuid import uuid1
@@ -23,7 +20,7 @@ def get_infrastructure_block_type() -> BlockTypeResponse:
 
 def get_block_name(postfix: str) -> str:
     postfix = slugify(postfix)
-    return f"{settings.PREFECT.STORAGE.NAME}-{postfix}".lower()
+    return f"{settings.PREFECT.STORAGE.BLOCK_NAME}-{postfix}".lower()
 
 
 def get_or_create_block_document(postfix: str) -> str:
@@ -48,20 +45,15 @@ def create_storage_block_document(postfix: str) -> str:
         0
     ].id
 
-    data = {"basepath": f"{settings.PREFECT.STORAGE.BASEPATH}/{postfix}"}
+    data = {"basepath": f"{settings.PREFECT.STORAGE.BASE_PATH}/{postfix}"}
 
     block_name = get_block_name(postfix)
-    if (
-        settings.PREFECT.STORAGE.BLOCK_TYPE
-        == PrefectStorageBlockType.REMOTE_FILE_SYSTEM
-    ):
+    if settings.PREFECT.STORAGE.BLOCK_TYPE == "remote-file-system":
         # setting should be provided for connection purposes
         data["settings"] = {
-            "key": settings.PREFECT.STORAGE.SETTINGS.KEY,
-            "secret": settings.PREFECT.STORAGE.SETTINGS.SECRET,
-            "client_kwargs": {
-                "endpoint_url": settings.PREFECT.STORAGE.SETTINGS.ENDPOINT_URL
-            },
+            "key": settings.PREFECT.STORAGE.KEY,
+            "secret": settings.PREFECT.STORAGE.SECRET,
+            "client_kwargs": {"endpoint_url": settings.PREFECT.STORAGE.ENDPOINT_URL},
         }
 
     block_document = BlockDocumentInput(

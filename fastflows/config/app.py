@@ -1,9 +1,9 @@
 import enum
 import os
 from pathlib import Path
-from typing import Optional
+from typing import Literal, Optional, Union
 
-from pydantic import BaseModel, BaseSettings
+import pydantic
 
 
 class PrefectStorageBlockType(enum.Enum):
@@ -22,36 +22,39 @@ class FastFlowsFlowStorageType(enum.Enum):
     LOCAL = "local"
 
 
-class _PrefectRemoteStorageExtraSettings(BaseModel):
-    """Settings useful for using prefect's `remote-file-system` storage block"""
-
-    KEY: str = "0xoznLEXV3JHiOKx"
-    SECRET: str = "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs"
-    ENDPOINT_URL: str = "http://nginx:9000"
+class _PrefectStorage(pydantic.BaseModel):
+    BLOCK_NAME: str = "fastflows-storage"
 
 
-class _PrefectStorage(BaseModel):
-    # it can be main bucket or main path, flows files will be stored in paths like $STORAGE_BASEPATH/flow-name
-    BASEPATH: str = "s3://test-bucket"
-    BLOCK_TYPE: PrefectStorageBlockType = PrefectStorageBlockType.REMOTE_FILE_SYSTEM
-    # for this name Fastflows will check Block to use to upload flows in Prefect
-    NAME: str = "minio"
-    # for remote-file-system
-    # should be a json-like string in env variables
-    SETTINGS = _PrefectRemoteStorageExtraSettings()
+class _PrefectLocalStorage(_PrefectStorage):
+    BLOCK_TYPE: Literal["local-file-system"]
+    BASE_PATH: Path = Path.home() / "fastflows-prefect-storage"
 
 
-class _PrefectSettings(BaseModel):
+class _PrefectRemoteStorage(_PrefectStorage):
+    BLOCK_TYPE: Literal["remote-file-system"]
+    BASE_PATH: pydantic.AnyUrl
+    KEY: str
+    SECRET: str
+    ENDPOINT_URL: str
+
+
+class _PrefectSettings(pydantic.BaseModel):
     API_TIMEOUT: int = 120
     INFRASTRUCTURE_BLOCK_TYPE: PrefectInfrastructureBlockType = (
         PrefectInfrastructureBlockType.PROCESS
     )
     QUEUE: str = "default"
-    URI: str = "http://localhost:8080"
-    STORAGE: _PrefectStorage = _PrefectStorage()
+    URI: str = "http://localhost:4200"
+    STORAGE: Union[_PrefectLocalStorage, _PrefectRemoteStorage] = pydantic.Field(
+        _PrefectLocalStorage(BLOCK_TYPE="local-file-system"), discriminator="BLOCK_TYPE"
+    )
+
+    class Config:
+        smart_union = True
 
 
-class _LoggingSettings(BaseModel):
+class _LoggingSettings(pydantic.BaseModel):
     ENQUEUE: bool = True
     FILENAME: str = "fastflows.log"
     FORMAT: str = (
@@ -65,14 +68,14 @@ class _LoggingSettings(BaseModel):
     ROTATION: str = "1 days"
 
 
-class _UvicornSettings(BaseModel):
+class _UvicornSettings(pydantic.BaseModel):
     HOST: str = "0.0.0.0"
     PORT: int = 5010
     RELOAD: bool = False
     ACCESS_LOG: bool = False
 
 
-class _AuthSettings(BaseModel):
+class _AuthSettings(pydantic.BaseModel):
     # auth
     # for test purposes values taken from tests in official repo:
     # https://github.com/busykoala/fastapi-opa/blob/a456f4e6f8f6cb90ca386bbcd5909af3ea44d646/tests/utils.py#L63
@@ -83,7 +86,7 @@ class _AuthSettings(BaseModel):
     OIDC_CLIENT_SECRET: Optional[str] = "secret"
 
 
-class FastFlowsSettings(BaseSettings):
+class FastFlowsSettings(pydantic.BaseSettings):
     AUTH: _AuthSettings = _AuthSettings()
     AUTO_DEPLOYMENT: bool = True
     AWS_LAMBDA_DEPLOY: bool = False
@@ -104,11 +107,10 @@ class FastFlowsSettings(BaseSettings):
 
     class Config:
         case_sensitive = True
+        env_file = ".env"
         env_nested_delimiter = "__"
         env_prefix = (
-            f"{env_name}__FASTFLOWS__"
-            if (env_name := os.environ.get("ENV_NAME")) is not None
-            else "FASTFLOWS__"
+            env_name if (env_name := os.environ.get("ENV_NAME")) is not None else ""
         )
 
 
