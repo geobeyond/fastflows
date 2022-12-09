@@ -10,14 +10,25 @@ services:
       context: ../
       dockerfile: ./docker/Dockerfile
     ports:
-      - ${FASTFLOWS__UVICORN__PORT}:${FASTFLOWS__UVICORN__PORT}
+      - "5010:5010"
     volumes:
       - .:/app/src
       - ../flows:/app/flows
     image: fastflows
     restart: always
-    env_file:
-      - .env
+    environment:
+      FLOWS_HOME: "flows"
+      FLOWS_STORAGE_TYPE: "local"
+      LOGGING__LEVEL: "DEBUG"
+      PREFECT__API_TIMEOUT: 120
+      PREFECT__STORAGE__BASE_PATH: "s3://test-bucket"
+      PREFECT__STORAGE__BLOCK_NAME: "minio"
+      PREFECT__STORAGE__BLOCK_TYPE: "remote-file-system"
+      PREFECT__STORAGE__ENDPOINT_URL: "http://nginx:9000"
+      PREFECT__STORAGE__KEY: "0xoznLEXV3JHiOKx"
+      PREFECT__STORAGE__SECRET: "MmG3vfemCe5mpcxP66a1XvPnsIoXTlWs"
+      PREFECT__URI: "http://prefect:4200"
+      UVICORN__PORT: 5010
     depends_on:
       - prefect
       - postgres
