@@ -110,7 +110,7 @@ class FastFlowsSettings(pydantic.BaseSettings):
         env_file = ".env"
         env_nested_delimiter = "__"
         env_prefix = (
-            env_name if (env_name := os.environ.get("ENV_NAME")) is not None else ""
+            env_name if (env_name := os.environ.get("ENV_NAME", "")) != "" else ""
         )
 
 
