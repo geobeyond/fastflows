@@ -1,37 +1,83 @@
-import os
 from unittest import mock
 import importlib
 
+import pytest
 
-@mock.patch.dict(
-    os.environ,
-    {
-        "ENV_NAME": "dev",
-        "dev__FASTFLOWS__PREFECT__URI": "http://dev-test-url",
-    },
+# NOTE: do not modify the below import line - There are tests below that use importlib to reload the `app` module
+from fastflows.config import app
+
+pytestmark = pytest.mark.unit
+
+
+@pytest.mark.parametrize(
+    "env_key, env_value, setting_key, expected",
+    [
+        pytest.param("DEBUG", "true", "DEBUG", True),
+        pytest.param("DEBUG", "false", "DEBUG", False),
+        pytest.param(
+            "PREFECT__URI",
+            "http://dev0-test-url",
+            "PREFECT.URI",
+            "http://dev0-test-url",
+        ),
+        pytest.param(
+            "PREFECT__STORAGE__BLOCK_TYPE",
+            "local-file-system",
+            "PREFECT.STORAGE.BLOCK_TYPE",
+            "local-file-system",
+        ),
+    ],
 )
-def test_define_config_based_ENV_NAME():
-
-    from fastflows.config import app
-
-    importlib.reload(app)
-
-    FastFlowsSettings = app.FastFlowsSettings
-    assert FastFlowsSettings().PREFECT.URI == "http://dev-test-url"
+def test_define_config_no_env_name(env_key, env_value, setting_key, expected):
+    with mock.patch.dict("os.environ", {env_key: env_value}, clear=True):
+        settings = app.FastFlowsSettings()  # noqa
+        got = eval(f"settings.{setting_key}")
+        assert got == expected
 
 
-@mock.patch.dict(
-    os.environ,
-    {
-        "ENV_NAME": "ANY",
-        "ANY__FASTFLOWS__PREFECT__URI": "http://ANY-test-url",
-    },
+@pytest.mark.parametrize(
+    "env_name_value, env_key, env_value, setting_key, expected",
+    [
+        pytest.param("", "DEBUG", "true", "DEBUG", True),
+        pytest.param("dev__", "dev__DEBUG", "true", "DEBUG", True),
+        pytest.param(
+            "",
+            "PREFECT__URI",
+            "http://dev1-test-url",
+            "PREFECT.URI",
+            "http://dev1-test-url",
+        ),
+        pytest.param(
+            "any",
+            "anyPREFECT__URI",
+            "http://dev1-test-url",
+            "PREFECT.URI",
+            "http://dev1-test-url",
+        ),
+        pytest.param(
+            "dev__",
+            "dev__PREFECT__URI",
+            "http://dev1-test-url",
+            "PREFECT.URI",
+            "http://dev1-test-url",
+        ),
+    ],
 )
-def test_define_config_based_ENV_NAME_2():
-
-    from fastflows.config import app
-
-    importlib.reload(app)
-
-    FastFlowsSettings = app.FastFlowsSettings
-    assert FastFlowsSettings().PREFECT.URI == "http://ANY-test-url"
+def test_define_config_based_env_name(
+    env_name_value: str, env_key: str, env_value: str, setting_key: str, expected
+):
+    with mock.patch.dict(
+        "os.environ",
+        {
+            "ENV_NAME": env_name_value,
+            env_key: env_value,
+        },
+        clear=True,
+    ):
+        # we reload the `app` module here in order to have the custom logic that is
+        # associated with the ENV_NAME environment variable be re-triggered - such logic
+        # is executed at import time
+        importlib.reload(app)
+        settings = app.FastFlowsSettings()  # noqa
+        got = eval(f"settings.{setting_key}")
+        assert got == expected

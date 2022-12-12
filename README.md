@@ -1,6 +1,6 @@
 ## Run FastFlow server
 
-FastFlows is a FastAPI server & command line tool to comunicate with Prefect 2.0 as a Workflow manager to deploy, run,
+FastFlows is a FastAPI server & command line tool to communicate with Prefect 2.0 as a Workflow manager to deploy, run,
 track flows and more.
 
 To start work with FastFlows you should define at least 2 environment variables:
@@ -16,16 +16,16 @@ To start work with FastFlows you should define at least 2 environment variables:
 ```
 
 If you want to define variables with env prefix, for example, like `LOCAL__PREFECT__URI` or `DEV__PREFECT__URI` you
-can use environment variable `ENV_NAME`
+can use environment variable `ENV_NAME`.
 
 If Fastflows will see `ENV_NAME` variable in environment - it will search for variables with prefix defined in
 this `ENV_NAME`, for example:
 
-if `ENV_NAME = 'LOCAL'`
+if `ENV_NAME = 'LOCAL__'`
 
 Fastflows will read variables like `LOCAL__PREFECT__URI` and `LOCAL__FLOWS_HOME`,
 
-if `ENV_NAME = 'DEV'`, then fastflows will expect variables like `DEV__PREFECT_URI` and `DEV__FLOWS_HOME`
+if `ENV_NAME = 'DEV__'`, then fastflows will expect variables like `DEV__PREFECT__URI` and `DEV__FLOWS_HOME`
 
 ### How to run FastFlows with Prefect cluster
 
@@ -51,11 +51,11 @@ if `ENV_NAME = 'DEV'`, then fastflows will expect variables like `DEV__PREFECT_U
 
 #### Auto deployment
 
-Deployment of Flows can be done by FastFlows automatically: if there is a new flow or changes in FLOWS_HOME
-directory - FastFlows creates a new deployment. To disable auto deployment set env variable to 0
+Deployment of Flows can be done by FastFlows automatically: if there is a new flow or changes in `FLOWS_HOME`
+directory - FastFlows creates a new deployment. To disable auto deployment set env variable to `false`
 
 ```console
 
-    FASTFLOWS__AUTO_DEPLOYMENT = 0
+    AUTO_DEPLOYMENT = false
 
 ```

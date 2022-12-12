@@ -11,6 +11,8 @@ import pytest
 from pathlib import Path
 from typing import Union
 
+pytestmark = pytest.mark.unit
+
 
 @pytest.mark.parametrize(
     "input,result",

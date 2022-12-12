@@ -1,6 +1,11 @@
 import os
 import datetime
+
+import pytest
+
 from fastflows.core.catalog.reader import FlowFileReader
+
+pytestmark = pytest.mark.unit
 
 
 def test_extract_tags(flows_folder):
