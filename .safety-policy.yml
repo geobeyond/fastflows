@@ -15,6 +15,13 @@ security: # configuration for the `safety check` command
       reason: >
         This vulnerability affects some dead code in the `py` dependency. This dependency is used by pytest but
         it does not use the affected code. More info: https://github.com/pytest-dev/py/issues/287
+    51499:
+      reason: >
+        Not relevant, as fastflows does not deal with wheel packages directly
+    51668:
+      reason: >
+        Ignored until sqlalchemy 2.0 stable is released
+      expires: "2023-03-01"
   continue-on-vulnerability-error: False # Suppress non-zero exit codes when vulnerabilities are found. Enable this in pipelines and CI/CD processes if you want to pass builds that have vulnerabilities. We recommend you set this to False.
 alert: # configuration for the `safety alert` command
   security:
