@@ -1,5 +1,5 @@
-import os
 import json
+
 from fastflows.config.app import settings
 
 
@@ -10,13 +10,8 @@ class CatalogCache:
     def __init__(self):
         self.data = self.read()
 
-    def check_or_create_home_folder(self) -> None:
-
-        if not settings.FLOWS_HOME.exists():
-            os.makedirs(settings.FLOWS_HOME, exist_ok=True)
-
     def read(self) -> None:
-        self.check_or_create_home_folder()
+        settings.FLOWS_HOME.mkdir(exist_ok=True, parents=True)
         try:
             with open(settings.CATALOG_CACHE, "r") as f:
                 raw_data = f.read()
