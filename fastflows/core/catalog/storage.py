@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 
 class FlowsStorageBase:
@@ -17,12 +17,16 @@ class FlowsStorageBase:
 
 
 class LocalStorage(FlowsStorageBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.storage_path = Path(self.storage_path)
+
     def list(self):
-        if not os.path.isdir(self.storage_path):
+        if not self.storage_path.is_dir():
             raise ValueError(
                 f"Flows Home must be a folder. You provided: {self.storage_path}"
             )
-        return os.listdir(self.storage_path)
+        return list(self.storage_path.iterdir())
 
     def read(self):
         pass

@@ -1,6 +1,6 @@
 import ast
-import os
 import sys
+from pathlib import Path
 from fastflows.schemas.prefect.flow_data import (
     FlowDataFromFile,
     ScheduleFromFile,
@@ -120,8 +120,8 @@ class FlowFileReader:
                 name=flow_name,
                 entrypoint=f"{self.file_path}:{func_name}",
                 file_path=self.file_path,
-                file_modified=os.path.getmtime(self.file_path)
-                if self.file_path
+                file_modified=Path(self.file_path).stat().st_mtime
+                if self.file_path is not None
                 else None,
                 schedule=Schedule(**schedule.dict(exclude={"lineno"}))
                 if schedule

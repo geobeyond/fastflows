@@ -12,6 +12,6 @@ def pytest_configure(config):
 
 
 @pytest.fixture
-def flows_folder() -> str:
+def flows_folder() -> pathlib.Path:
     current_folder = pathlib.Path(__file__).parent
-    return str(current_folder / "test_data" / "flows")
+    return current_folder / "test_data" / "flows"
