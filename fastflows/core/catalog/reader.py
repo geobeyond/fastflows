@@ -1,15 +1,19 @@
 import ast
 import sys
 from pathlib import Path
-from fastflows.schemas.prefect.flow_data import (
+from typing import List, Optional, Tuple
+
+from ...config import settings
+from ...schemas.prefect.flow_data import (
     FlowDataFromFile,
     ScheduleFromFile,
     TagsFromFile,
     Schedule,
 )
-from typing import List, Optional, Tuple
-from fastflows.config.app import settings
-from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
+from ..utils.parse_data import (
+    parse_schedule_line,
+    parse_tags_line,
+)
 
 
 class FlowFileReader:

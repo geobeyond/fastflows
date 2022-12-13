@@ -2,7 +2,7 @@ import pytest
 from typer.testing import CliRunner
 
 from fastflows.cli.main import app
-from fastflows.config import app as cfg
+from fastflows.config import settings
 
 
 @pytest.fixture
@@ -10,7 +10,7 @@ def runner():
     return CliRunner()
 
 
-cfg.settings.DEBUG = True
+settings.DEBUG = True
 
 
 @pytest.fixture

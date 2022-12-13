@@ -1,11 +1,13 @@
-import typer
-import sys
 import json
-from ast import literal_eval
-from typing import Optional
-from functools import wraps
+import sys
 import traceback
-from fastflows.config.app import settings
+from ast import literal_eval
+from functools import wraps
+from typing import Optional
+
+import typer
+
+from ..config import settings
 
 
 def process_params_input_as_a_comma_separated_string(params: str) -> dict:

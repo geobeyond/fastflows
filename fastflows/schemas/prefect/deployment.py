@@ -2,23 +2,25 @@
 import datetime
 import uuid
 from time import time
-from pydantic import Field, validator, BaseModel, root_validator
 from typing import List, Optional, Union
-from fastflows.schemas.prefect.misc import get_hash_from_data, Schedule
-from fastflows.config.app import settings
+
+import pydantic
+
+from ...config import settings
+from . import misc
 
 
-class DeploymentInputParams(BaseModel):
+class DeploymentInputParams(pydantic.BaseModel):
     """deployment params that can be in input by user"""
 
     # can be input from rest api
     # properties what can be input by user with cli or REST API
-    schedule: Optional[Schedule] = None
+    schedule: Optional[misc.Schedule] = None
     is_schedule_active: bool = True
     parameters: Optional[dict] = {}
     version: Optional[Union[int, str]]
     work_queue_name: Optional[str] = settings.PREFECT.QUEUE
-    tags: List[str] = Field(default_factory=list)
+    tags: List[str] = pydantic.Field(default_factory=list)
 
 
 def generate_deployment_name():
@@ -28,7 +30,7 @@ def generate_deployment_name():
 class DeploymentSpec(DeploymentInputParams):
 
     name: Optional[str] = None
-    flow_id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    flow_id: str = pydantic.Field(default_factory=lambda: str(uuid.uuid4()))
     storage_document_id: str
     infra_overrides: dict = {}
     flow_data: Optional[str]
@@ -38,13 +40,13 @@ class DeploymentSpec(DeploymentInputParams):
     entrypoint: Optional[str]
     infrastructure_document_id: Optional[str]
 
-    @validator("flow_id", "name")
+    @pydantic.validator("flow_id", "name")
     def not_empty_string(cls, value):
         if value.strip() == "":
             raise ValueError("Value cannot be empty string")
         return value
 
-    @root_validator(pre=True)
+    @pydantic.root_validator(pre=True)
     def generate_tags_and_name(cls, values) -> List[dict]:
         if not values.get("version"):
             values["version"] = 1
@@ -59,7 +61,7 @@ class DeploymentSpec(DeploymentInputParams):
             ]
         )
         if not values.get("name"):
-            values["name"] = get_hash_from_data(str(values["flow_data"]))
+            values["name"] = misc.get_hash_from_data(str(values["flow_data"]))
 
         return values
 

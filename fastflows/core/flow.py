@@ -1,10 +1,18 @@
-from typing import List, Optional
-from fastflows.schemas.prefect.flow import Flow, FlowDeployInput
-from fastflows.schemas.prefect.flow_run import FlowRunResponse, FlowRunInput
-from fastflows.errors import FlowNotFound
-from fastflows.core.catalog.catalog import catalog, Catalog, catalog_by_id
-from fastflows.providers import provider
-from fastflows.config.app import settings
+import typing
+from pathlib import Path
+
+from loguru import logger
+
+from ..config import settings
+from .. import (
+    errors,
+    providers,
+)
+from ..schemas.prefect import (
+    flow as flow_schemas,
+    flow_run as flow_run_schemas,
+)
+from .catalog import catalog as catalog_module
 
 
 def get_flow_id(flow_name: str, by_id: bool):
@@ -12,67 +20,72 @@ def get_flow_id(flow_name: str, by_id: bool):
     return flow_id
 
 
-def get_flow_by_name(flow_name: str) -> Flow:
+def get_flow_by_name(flow_name: str) -> flow_schemas.Flow:
     """
-        get flow from Catalog, if flow does not exists - try to re-register
+        get flow from Catalog, if flow does not exist - try to re-register
     flows & try one more time
     """
 
-    flow = catalog.get(flow_name)
+    flow = catalog_module.catalog.get(flow_name)
 
     if not flow:
-        flow = register_flow_and_check(flow_name, catalog=catalog)
+        flow = register_flow_and_check(flow_name, catalog_=catalog_module.catalog)
     return flow
 
 
-def register_flow_and_check(flow_id: str, catalog: dict) -> Flow:
-    # try to register flows, maybe they was updated during runtime
-    Catalog().register_and_deploy()
-    flow = catalog.get(flow_id)
+def register_flow_and_check(flow_id: str, catalog_: dict) -> flow_schemas.Flow:
+    # try to register flows, maybe they were updated during runtime
+    catalog_module.Catalog().register_and_deploy()
+    flow = catalog_.get(flow_id)
     if not flow:
-        raise FlowNotFound(
-            f"Flow was not found in Catalog. Available flows {list(catalog.keys())}"
+        raise errors.FlowNotFound(
+            f"Flow was not found in Catalog. Available flows {list(catalog_.keys())}"
         )
     return flow
 
 
-def get_flow_by_id(flow_id: str) -> Flow:
-    flow = catalog_by_id.get(flow_id)
+def get_flow_by_id(flow_id: str) -> flow_schemas.Flow:
+    flow = catalog_module.catalog_by_id.get(flow_id)
     if not flow:
-        flow = register_flow_and_check(flow_id, catalog=catalog_by_id)
+        flow = register_flow_and_check(flow_id, catalog_=catalog_module.catalog_by_id)
     return flow
 
 
 def run_flow(
-    flow_name: str, by_id: bool, flow_run_input: FlowRunInput
-) -> FlowRunResponse:
+    flow_name: str, by_id: bool, flow_run_input: flow_run_schemas.FlowRunInput
+) -> flow_run_schemas.FlowRunResponse:
     """run flow by name or id"""
     flow_id = get_flow_id(flow_name, by_id)
     flow = get_flow_by_id(flow_id)
     if flow:
-        return provider.run_flow(
+        return providers.provider.run_flow(
             deployment_id=flow.deployment_id,
             flow_run_params=flow_run_input,
         )
     else:
         err_message = f"Flow with {'ID' if by_id else 'name'} {flow_name} was not found"
-        raise FlowNotFound(err_message)
+        raise errors.FlowNotFound(err_message)
 
 
-def get_flow_runs_list(flow_name: str, by_id: bool) -> List[FlowRunResponse]:
+def get_flow_runs_list(
+    flow_name: str, by_id: bool
+) -> typing.List[flow_run_schemas.FlowRunResponse]:
     flow_id = get_flow_id(flow_name, by_id)
-    return provider.list_flow_runs(flow_id)
+    return providers.provider.list_flow_runs(flow_id)
 
 
-def list_flows(flows_home_path: Optional[str] = settings.FLOWS_HOME) -> List[Flow]:
+def list_flows(
+    flows_home_path: typing.Optional[Path] = settings.FLOWS_HOME,
+) -> typing.List[str]:
     # they cannot be registered in Prefect, just list from FLOWS_HOME
-    Catalog(flows_home_path=flows_home_path).register_and_deploy()
-    return list(catalog.keys())
+    logger.debug("Inside list_flows")
+    catalog_module.Catalog(flows_home_path=flows_home_path).register_and_deploy()
+    return list(catalog_module.catalog.keys())
 
 
 def deploy_flows(
-    flow_input: FlowDeployInput,
-) -> List[Flow]:
-    return Catalog(flows_home_path=flow_input.flows_home_path).register_and_deploy(
-        flow_input
-    )
+    flow_input: flow_schemas.FlowDeployInput,
+) -> typing.List[flow_schemas.Flow]:
+    return catalog_module.Catalog(
+        flows_home_path=flow_input.flows_home_path
+    ).register_and_deploy(flow_input)

@@ -1,9 +1,14 @@
-from fastflows.providers import provider
-from fastflows.config.app import settings
-from fastflows.schemas.prefect.block import BlockDocumentInput, BlockTypeResponse
-from slugify import slugify
 from uuid import uuid1
-from fastflows.errors import FastFlowException
+
+from slugify import slugify
+
+from ..config import settings
+from ..errors import FastFlowException
+from ..providers import provider
+from ..schemas.prefect.block import (
+    BlockDocumentInput,
+    BlockTypeResponse,
+)
 
 
 def get_storage_block_type() -> BlockTypeResponse:

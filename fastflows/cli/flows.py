@@ -1,31 +1,28 @@
 """ flows command """
-import typer
+import typing
 from pathlib import Path
-from typing import List
+
+import typer
 from rich import print as rprint
-from typing import Optional
-from fastflows.config.app import settings
-from fastflows.schemas.prefect.flow import FlowDeployInput
-from fastflows.schemas.prefect.flow_run import FlowRunInput
-from fastflows.schemas.prefect.deployment import DeploymentInputParams
-from fastflows.core.utils.parse_data import parse_schedule_line, parse_tags_line
-from fastflows.core.flow import run_flow, list_flows, deploy_flows
-from fastflows.cli.utils import (
-    catch_exceptions,
-    process_params_from_str,
-)
-from fastflows.utils.core import (
+
+from ..config import settings
+from ..schemas.prefect.flow import FlowDeployInput
+from ..schemas.prefect.flow_run import FlowRunInput
+from ..schemas.prefect.deployment import DeploymentInputParams
+from ..core.utils import parse_data
+from ..core import flow as flow_ops
+from ..utils.core import (
     check_path_is_dir,
     check_path_exists,
 )
-
+from . import utils
 
 flows_app = typer.Typer()
 
 params_doc_string = 'Can be passed as a comma separated string like \'key1=value1,key2=value2\'. Or as a json like {"a": "b"}'
 
 
-@catch_exceptions
+@utils.catch_exceptions
 @flows_app.command(help="Run flow by Name or Id")
 def run(
     flow_name: str,
@@ -35,14 +32,14 @@ def run(
         callback=lambda v: v.upper(),
         help="State to set for new flow run - by default 'Scheduled' (mean that Flow will be runned imidiatly)",
     ),
-    params: Optional[str] = typer.Option(
+    params: typing.Optional[str] = typer.Option(
         None,
-        callback=process_params_from_str,
+        callback=utils.process_params_from_str,
         help=f"Parameters to pass to Flow Id. {params_doc_string}",
     ),
 ):
     typer.echo(f"Run flow: {flow_name}")
-    result = run_flow(
+    result = flow_ops.run_flow(
         flow_name,
         by_id=flow_id,
         flow_run_input=FlowRunInput(state={"type": state}, parameters=params),
@@ -53,35 +50,37 @@ def run(
 
 
 @flows_app.command()
-@catch_exceptions
-def list(flow_path: Optional[Path] = settings.FLOWS_HOME):
+@utils.catch_exceptions
+def list(flow_path: typing.Optional[Path] = settings.FLOWS_HOME):
     """List all flows from FLOWS_HOME"""
     typer.echo("\nAll flows from FLOWS_HOME: \n")
-    typer.echo(f"\nAvailable flows: {list_flows(flows_home_path=flow_path)}\n")
+    typer.echo(f"\nAvailable flows: {flow_ops.list_flows(flows_home_path=flow_path)}\n")
 
 
 @flows_app.command()
-@catch_exceptions
+@utils.catch_exceptions
 def deploy(
     flows_home_path: Path = typer.Argument(
         settings.FLOWS_HOME, callback=check_path_is_dir
     ),
-    flow_name: Optional[str] = typer.Option(None, help="Flow name to deploy"),
-    flow_path: Optional[Path] = typer.Option(
+    flow_name: typing.Optional[str] = typer.Option(None, help="Flow name to deploy"),
+    flow_path: typing.Optional[Path] = typer.Option(
         None, help="Flow path to deploy", callback=check_path_exists
     ),
-    schedule: Optional[str] = typer.Option(
+    schedule: typing.Optional[str] = typer.Option(
         None,
-        callback=parse_schedule_line,
+        callback=parse_data.parse_schedule_line,
         help="""Schedule that should be used in the Deployment. If it will be used without `flow_path` or `flow_name` options
         this mean that ALL flows from path will be deployed with that schedule.
         Example of schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC""",
     ),
-    active: Optional[bool] = typer.Option(True, help="Activate flow after deploy"),
-    tags: Optional[List[str]] = typer.Option(
-        None, callback=parse_tags_line, help="Tags for deployment"
+    active: typing.Optional[bool] = typer.Option(
+        True, help="Activate flow after deploy"
     ),
-    params: Optional[str] = typer.Option(
+    tags: typing.Optional[typing.List[str]] = typer.Option(
+        None, callback=parse_data.parse_tags_line, help="Tags for deployment"
+    ),
+    params: typing.Optional[str] = typer.Option(
         None, help=f"Parameters for deployment. {params_doc_string}"
     ),
     force: bool = typer.Option(False, help="Force re-deploy all flows"),
@@ -99,7 +98,7 @@ def deploy(
 
     typer.echo(f"{main_message} {sub_message}")
 
-    deploy_flows(
+    flow_ops.deploy_flows(
         flow_input=FlowDeployInput(
             flows_home_path=flows_home_path,
             name=flow_name,

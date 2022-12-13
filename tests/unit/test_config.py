@@ -1,10 +1,10 @@
-from unittest import mock
 import importlib
+from unittest import mock
 
 import pytest
 
-# NOTE: do not modify the below import line - There are tests below that use importlib to reload the `app` module
-from fastflows.config import app
+# NOTE: do not modify the below import line - There are tests below that use importlib to reload the `config` module
+from fastflows import config
 
 pytestmark = pytest.mark.unit
 
@@ -30,7 +30,7 @@ pytestmark = pytest.mark.unit
 )
 def test_define_config_no_env_name(env_key, env_value, setting_key, expected):
     with mock.patch.dict("os.environ", {env_key: env_value}, clear=True):
-        settings = app.FastFlowsSettings()  # noqa
+        settings = config.FastFlowsSettings()  # noqa
         got = eval(f"settings.{setting_key}")
         assert got == expected
 
@@ -74,10 +74,10 @@ def test_define_config_based_env_name(
         },
         clear=True,
     ):
-        # we reload the `app` module here in order to have the custom logic that is
+        # we reload the `config` module here in order to have the custom logic that is
         # associated with the ENV_NAME environment variable be re-triggered - such logic
         # is executed at import time
-        importlib.reload(app)
-        settings = app.FastFlowsSettings()  # noqa
+        importlib.reload(config)
+        settings = config.FastFlowsSettings()  # noqa
         got = eval(f"settings.{setting_key}")
         assert got == expected

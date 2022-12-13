@@ -1,3 +1,8 @@
+from pathlib import Path
+from typing import Union
+
+import pytest
+
 from fastflows.cli.utils import (
     process_params_as_a_string_with_dict,
     process_params_input_as_a_comma_separated_string,
@@ -7,9 +12,6 @@ from fastflows.cli.utils import (
 from fastflows.utils.core import (
     check_path_is_dir,
 )
-import pytest
-from pathlib import Path
-from typing import Union
 
 pytestmark = pytest.mark.unit
 

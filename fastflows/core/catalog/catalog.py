@@ -1,34 +1,41 @@
 import logging
-from slugify import slugify
+import typing
 from pathlib import Path
-from fastflows.errors import FlowNotFound
-from fastflows.config.app import (
+
+from slugify import slugify
+
+from ... import errors
+from ...config import (
     FastFlowsFlowStorageType,
     settings,
 )
-from fastflows.core.deployment import (
+from ...providers import provider
+from ...schemas.prefect.deployment import DeploymentResponse
+from ...schemas.prefect.flow import (
+    Flow,
+    PrefectFlowResponse,
+    FlowDeployInput,
+)
+from ...schemas.prefect.flow_data import (
+    FlowDataFromFile,
+    BaseFlowData,
+)
+from ..deployment import (
     get_last_deployments_per_flow,
     create_flow_deployment,
 )
-from fastflows.core.catalog.storage import LocalStorage
-from fastflows.core.catalog.reader import FlowFileReader
-from fastflows.schemas.prefect.flow import Flow, PrefectFlowResponse, FlowDeployInput
-from fastflows.schemas.prefect.flow_data import FlowDataFromFile, BaseFlowData
-from fastflows.providers import provider
-from fastflows.core.catalog.cache import CatalogCache
-from fastflows.core.utils.singleton import Singleton
-from fastflows.schemas.prefect.deployment import (
-    DeploymentResponse,
-)
-from typing import List, Optional, Dict, Union
+from ..utils.singleton import Singleton
+from .cache import CatalogCache
+from .reader import FlowFileReader
+from .storage import LocalStorage
 
 
 class Catalog(metaclass=Singleton):
     """main class to register all flows"""
 
     # because class is singleton - always will be one instance
-    catalog: Dict[str, Flow] = {}
-    catalog_by_id: Dict[str, Flow] = {}
+    catalog: typing.Dict[str, Flow] = {}
+    catalog_by_id: typing.Dict[str, Flow] = {}
 
     storages = {
         # add here API to work with flows on S3, or any other store
@@ -75,7 +82,7 @@ class Catalog(metaclass=Singleton):
 
         if not flow_file.is_flows:
             # file exists, but there is no flow inside
-            raise FlowNotFound("Flow was not found in provided data")
+            raise errors.FlowNotFound("Flow was not found in provided data")
 
         return flow_file.flows
 
@@ -87,19 +94,21 @@ class Catalog(metaclass=Singleton):
 
         if not flow_path.exists():
             # file does not exist
-            raise FlowNotFound(f"Flow path '{flow_path}' does not exist'")
+            raise errors.FlowNotFound(f"Flow path '{flow_path}' does not exist'")
 
         flow_file = FlowFileReader(file_path=flow_path)
 
         if not flow_file.is_flows:
             # file exists, but there is no flow inside
-            raise FlowNotFound(f"Flow was not found in file with path '{flow_path}''")
+            raise errors.FlowNotFound(
+                f"Flow was not found in file with path '{flow_path}''"
+            )
 
         return flow_file.flows
 
     def _get_flows_from_path(
         self, flow_input: FlowDeployInput
-    ) -> List[FlowDataFromFile]:
+    ) -> typing.List[FlowDataFromFile]:
         if flow_input.file_path:
             flows_in_folder = self._flow_path_processing(flow_input.file_path)
 
@@ -112,10 +121,10 @@ class Catalog(metaclass=Singleton):
 
     def _filter_flows_by_name(
         self,
-        flows_in_folder: List[FlowDataFromFile],
+        flows_in_folder: typing.List[FlowDataFromFile],
         flow_name: str,
-        flows_path: Optional[str],
-    ) -> List[FlowDataFromFile]:
+        flows_path: typing.Optional[str],
+    ) -> typing.List[FlowDataFromFile]:
         flows_in_folder = [flow for flow in flows_in_folder if flow.name == flow_name]
 
         if len(flows_in_folder) == 0:
@@ -126,10 +135,12 @@ class Catalog(metaclass=Singleton):
                     f"Flow with name '{flow_name}' was not found in path '{flows_path}'"
                 )
 
-            raise FlowNotFound(err_message)
+            raise errors.FlowNotFound(err_message)
         return flows_in_folder
 
-    def _clean_up_catalog_cache(self, flows_in_folder: List[FlowDataFromFile]) -> None:
+    def _clean_up_catalog_cache(
+        self, flows_in_folder: typing.List[FlowDataFromFile]
+    ) -> None:
         flow_names_in_folder = [flow.name for flow in flows_in_folder]
 
         clean_catalog = {
@@ -139,7 +150,7 @@ class Catalog(metaclass=Singleton):
         }
         self.catalog = clean_catalog
 
-    def _get_version_from_tag(self, tags: List[str]) -> int:
+    def _get_version_from_tag(self, tags: typing.List[str]) -> int:
         for tag in tags:
             if tag.startswith(settings.VERSION_PREFIX):
                 version = tag.split(settings.TAG_DELIMITER)[1]
@@ -168,8 +179,8 @@ class Catalog(metaclass=Singleton):
                 logging.info(f"Flow without any deployment: {_flow_data['name']}")
 
     def register_and_deploy(
-        self, flow_input: Optional[FlowDeployInput] = FlowDeployInput()
-    ) -> List[Flow]:
+        self, flow_input: typing.Optional[FlowDeployInput] = FlowDeployInput()
+    ) -> typing.List[Flow]:
         """
         flow_name - name of the Flow to deploy
         flow_path - path to the Flow to deploy
@@ -187,7 +198,7 @@ class Catalog(metaclass=Singleton):
         flows_in_folder = self._get_flows_from_path(flow_input)
 
         if flow_input.name:
-            flows_in_folder: List[FlowDataFromFile] = self._filter_flows_by_name(
+            flows_in_folder: typing.List[FlowDataFromFile] = self._filter_flows_by_name(
                 flows_in_folder, flow_input.name, flow_input.file_path
             )
 
@@ -206,7 +217,7 @@ class Catalog(metaclass=Singleton):
         return flows_deployed
 
     def _get_deployment_version(
-        self, flow: Union[Flow, PrefectFlowResponse], flow_file: FlowDataFromFile
+        self, flow: typing.Union[Flow, PrefectFlowResponse], flow_file: FlowDataFromFile
     ) -> int:
         if not isinstance(flow, PrefectFlowResponse):
             version = flow.version
@@ -231,11 +242,11 @@ class Catalog(metaclass=Singleton):
 
     def _process_flow_file_deployment(
         self, flow_file: FlowDataFromFile, force: bool
-    ) -> Optional[Flow]:
+    ) -> typing.Optional[Flow]:
 
-        flow: Union[Flow, PrefectFlowResponse] = self._prepare_flow_for_deployment(
-            flow_file, force
-        )
+        flow: typing.Union[
+            Flow, PrefectFlowResponse
+        ] = self._prepare_flow_for_deployment(flow_file, force)
 
         if not flow:
             # mean no updates - no need to redeploy
@@ -271,7 +282,7 @@ class Catalog(metaclass=Singleton):
 
     def _prepare_flow_for_deployment(
         self, flow_file: FlowDataFromFile, force: bool
-    ) -> Optional[PrefectFlowResponse]:
+    ) -> typing.Optional[PrefectFlowResponse]:
         if flow_file.name in self.catalog:
             if (
                 flow_file.deployment_name
@@ -296,7 +307,7 @@ class Catalog(metaclass=Singleton):
     def _get_full_flow_location(self, flow_file_name: str) -> str:
         return Path(self.flows_home_path) / flow_file_name
 
-    def process_flows_folder(self) -> List[FlowDataFromFile]:
+    def process_flows_folder(self) -> typing.List[FlowDataFromFile]:
         """list flows from FLOWS_HOME without register them or load them to Prefect if 'register' True"""
 
         flows_in_storage = self._get_storage().list()
@@ -313,7 +324,7 @@ class Catalog(metaclass=Singleton):
             flows_in_folder += flow_file.flows
         return flows_in_folder
 
-    def list_flows(self) -> List[str]:
+    def list_flows(self) -> typing.List[str]:
         return list(catalog.items())
 
 

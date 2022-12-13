@@ -1,6 +1,6 @@
 import fsspec
 
-from fastflows.config.app import settings
+from ..config import settings
 
 
 class S3FileSystem:
