@@ -8,7 +8,7 @@ import traceback
 from fastflows.config.app import settings
 
 
-def process_parmas_input_as_a_comma_separated_string(params: str) -> dict:
+def process_params_input_as_a_comma_separated_string(params: str) -> dict:
     # mean format like --params a=1
     parameters = {}
     params = params.split(",")
@@ -18,7 +18,7 @@ def process_parmas_input_as_a_comma_separated_string(params: str) -> dict:
     return parameters
 
 
-def process_parmas_as_a_string_with_dict(params) -> dict:
+def process_params_as_a_string_with_dict(params) -> dict:
     try:
         # if it was n't json - try eval
         return json.loads(params)
@@ -39,10 +39,10 @@ def process_params_from_str(params: Optional[str]) -> dict:
         return {}
     params = params.strip()
     if "=" in params:
-        parameters: dict = process_parmas_input_as_a_comma_separated_string(params)
+        parameters: dict = process_params_input_as_a_comma_separated_string(params)
     elif params.startswith("{") and params.endswith("}"):
         # mean expected --params {"a": "b"}
-        parameters: dict = process_parmas_as_a_string_with_dict(params)
+        parameters: dict = process_params_as_a_string_with_dict(params)
     else:
         raise ValueError(
             f"Invalid format of parameters. Should be like 'a=1,b=2' or '{{\"a\": \"b\"}}'. You pass: {params}"

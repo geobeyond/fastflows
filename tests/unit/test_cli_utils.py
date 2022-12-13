@@ -1,6 +1,6 @@
 from fastflows.cli.utils import (
-    process_parmas_as_a_string_with_dict,
-    process_parmas_input_as_a_comma_separated_string,
+    process_params_as_a_string_with_dict,
+    process_params_input_as_a_comma_separated_string,
     process_params_from_str,
 )
 
@@ -25,7 +25,7 @@ pytestmark = pytest.mark.unit
     ),
 )
 def test_process_parmas_input_as_a_comma_separated_string(input: str, result: dict):
-    assert process_parmas_input_as_a_comma_separated_string(input) == result
+    assert process_params_input_as_a_comma_separated_string(input) == result
 
 
 @pytest.mark.parametrize(
@@ -36,7 +36,7 @@ def test_process_parmas_input_as_a_comma_separated_string(input: str, result: di
     ),
 )
 def test_process_parmas_as_a_string_with_dict(input: str, result: dict):
-    assert process_parmas_as_a_string_with_dict(input) == result
+    assert process_params_as_a_string_with_dict(input) == result
 
 
 @pytest.mark.parametrize(
