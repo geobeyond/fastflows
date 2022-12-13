@@ -60,10 +60,10 @@ class _LoggingSettings(pydantic.BaseModel):
     FORMAT: str = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | "
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> "
-        "[id:{extra[request_id]}] - <level>{message}</level>"
+        "<level>{message}</level>"
     )
     LEVEL: str = "INFO"
-    PATH: str = "/tmp"
+    PATH: Path = Path("/tmp")
     RETENTION: str = "1 months"
     ROTATION: str = "1 days"
 

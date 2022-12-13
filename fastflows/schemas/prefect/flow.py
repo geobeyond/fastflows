@@ -1,14 +1,15 @@
 import datetime
-
-from typing import List, Optional
-from pydantic import BaseModel, Field
-from fastflows.schemas.prefect.deployment import DeploymentInputParams
-from fastflows.config.app import settings
 from pathlib import Path
+from typing import List, Optional
+
+import pydantic
+
+from ...config import settings
+from .deployment import DeploymentInputParams
 
 
 # before prefect call
-class FlowDeployInput(BaseModel):
+class FlowDeployInput(pydantic.BaseModel):
     """REST Create flow Input model"""
 
     name: Optional[str]
@@ -19,12 +20,12 @@ class FlowDeployInput(BaseModel):
     flow_base_path: Optional[Path]
     entrypoint: Optional[str]
     deployment_params: Optional[DeploymentInputParams]
-    force: bool = Field(False, description="Force deploy all flows")
+    force: bool = pydantic.Field(False, description="Force deploy all flows")
     work_queue_name: Optional[str] = settings.PREFECT.QUEUE
 
 
 # Flow Data after communication with Prefect
-class Flow(BaseModel):
+class Flow(pydantic.BaseModel):
     """Created in Prefect Flow with deployment"""
 
     id: str
@@ -35,10 +36,10 @@ class Flow(BaseModel):
     version: int
 
 
-class PrefectFlowResponse(BaseModel):
+class PrefectFlowResponse(pydantic.BaseModel):
 
     name: str
-    tags: List[str] = Field(default_factory=list)
+    tags: List[str] = pydantic.Field(default_factory=list)
     id: str
     created: datetime.datetime
     updated: datetime.datetime

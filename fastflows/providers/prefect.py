@@ -1,24 +1,30 @@
+from typing import (
+    Dict,
+    List,
+    Optional,
+)
+
 import httpx
-from fastflows.config.app import settings
-from fastflows.providers.base import BaseProvider
-from fastflows.schemas.prefect.deployment import DeploymentSpec, DeploymentResponse
-from fastflows.schemas.prefect.block import (
+
+from .base import BaseProvider
+from .utils import api_response_handler
+from ..config import settings
+from ..schemas.prefect.block import (
     BlockDocumentInput,
     BlockDocumentResponse,
     BlockTypeResponse,
     BlockSchemaResponse,
 )
-from fastflows.schemas.prefect.flow import PrefectFlowResponse
-from fastflows.schemas.prefect.flow_data import BaseFlowData
-from fastflows.providers.utils import api_response_handler
-from fastflows.schemas.prefect.flow_run import (
+from ..schemas.prefect.deployment import DeploymentSpec, DeploymentResponse
+from ..schemas.prefect.flow import PrefectFlowResponse
+from ..schemas.prefect.flow_data import BaseFlowData
+from ..schemas.prefect.flow_run import (
     FlowRunResponse,
     InitFlowRun,
     StateBase,
     UpdateStateResponse,
     FlowRunResponseGraph,
 )
-from typing import List, Optional, Dict
 
 
 class Flows:

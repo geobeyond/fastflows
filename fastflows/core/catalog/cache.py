@@ -1,6 +1,6 @@
 import json
 
-from fastflows.config.app import settings
+from ...config import settings
 
 
 class CatalogCache:

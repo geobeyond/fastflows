@@ -1,12 +1,14 @@
-from fastflows.providers import provider
 from typing import Dict
-from fastflows.schemas.prefect.deployment import DeploymentResponse
 
-from fastflows.core.blocks import get_or_create_block_document
-from fastflows.core.storage import S3FileSystem
-from fastflows.schemas.prefect.flow import Flow
-from fastflows.schemas.prefect.deployment import DeploymentSpec
-from fastflows.config.app import settings
+from .blocks import get_or_create_block_document
+from ..config import settings
+from ..providers import provider
+from ..schemas.prefect.deployment import (
+    DeploymentSpec,
+    DeploymentResponse,
+)
+from ..schemas.prefect.flow import Flow
+from .storage import S3FileSystem
 
 
 def get_last_deployments_per_flow() -> Dict[str, DeploymentResponse]:
