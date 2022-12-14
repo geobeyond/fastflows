@@ -30,7 +30,8 @@ logger.configure(
             "rotation": settings.LOGGING.ROTATION,
             **_common_log_handler_kwargs,
         },
-    ]
+    ],
+    extra={"request_id": None},
 )
 
 app = typer.Typer()
