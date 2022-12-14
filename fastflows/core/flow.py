@@ -1,8 +1,6 @@
 import typing
 from pathlib import Path
 
-from loguru import logger
-
 from ..config import settings
 from .. import (
     errors,
@@ -78,7 +76,6 @@ def list_flows(
     flows_home_path: typing.Optional[Path] = settings.FLOWS_HOME,
 ) -> typing.List[str]:
     # they cannot be registered in Prefect, just list from FLOWS_HOME
-    logger.debug("Inside list_flows")
     catalog_module.Catalog(flows_home_path=flows_home_path).register_and_deploy()
     return list(catalog_module.catalog.keys())
 

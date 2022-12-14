@@ -1,7 +1,6 @@
 import typing
 
 from fastapi import APIRouter
-from loguru import logger
 
 from ..schemas.prefect import flow as flow_schemas
 from ..schemas.prefect import flow_run as flow_run_schemas
@@ -52,7 +51,6 @@ async def init_flow_run_by_name(
 @router.get("")
 @handle_rest_errors
 async def list_all_registered_flows_in_fast_flows():
-    logger.debug("Inside the list_all_registered_flows_in_fast_flows() path operation")
     return flow_ops.list_flows()
 
 

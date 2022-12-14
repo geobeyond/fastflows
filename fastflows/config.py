@@ -60,7 +60,7 @@ class _LoggingSettings(pydantic.BaseModel):
     FORMAT: str = (
         "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <8}</level> | "
         "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> "
-        "<level>{message}</level>"
+        "[id:{extra[request_id]}] - <level>{message}</level>"
     )
     LEVEL: str = "INFO"
     PATH: Path = Path("/tmp")
