@@ -1,15 +1,18 @@
 import typer
 import sys
-from fastflows.schemas.prefect.flow_run import StateBase, FlowRunStateEnum
+
 from rich import print as rprint
-from fastflows.core.flow_run import (
+
+from ..schemas.prefect.flow_run import (
+    StateBase,
+    FlowRunStateEnum,
+)
+from ..core.flow_run import (
     update_flow_run_state,
     get_flow_run_details,
 )
-from fastflows.core.flow import (
-    get_flow_runs_list,
-)
-from fastflows.cli.utils import catch_exceptions
+from ..core.flow import get_flow_runs_list
+from .utils import catch_exceptions
 
 # ---- Flow runs commands
 flow_runs = typer.Typer()

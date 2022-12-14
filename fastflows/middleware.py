@@ -49,7 +49,7 @@ class FastFlowsLoggingMiddleware(BaseHTTPMiddleware):
     The prepared logger is then stored in the app state object. It can be used inside
     a path operation function like this:
 
-    >>> request.app.state.LOGGER.info("Hi world!")
+        `request.app.state.LOGGER.info("Hi world!")`
 
     """
 
