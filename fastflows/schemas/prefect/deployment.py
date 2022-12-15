@@ -41,13 +41,13 @@ class DeploymentSpec(DeploymentInputParams):
     infrastructure_document_id: Optional[str]
 
     @pydantic.validator("flow_id", "name")
-    def not_empty_string(cls, value):
+    def not_empty_string(cls, value):  # noqa
         if value.strip() == "":
             raise ValueError("Value cannot be empty string")
         return value
 
     @pydantic.root_validator(pre=True)
-    def generate_tags_and_name(cls, values) -> List[dict]:
+    def generate_tags_and_name(cls, values) -> List[dict]:  # noqa
         if not values.get("version"):
             values["version"] = 1
 

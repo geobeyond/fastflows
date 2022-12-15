@@ -10,10 +10,10 @@ def handle_rest_errors(func):
         try:
             return await func(*args, **kwargs)
         except FlowNotFound as e:
-            raise HTTPException(status_code=404, detail=str(e))
+            raise HTTPException(status_code=404, detail=str(e)) from e
         except (ApiValidationError, pydantic.error_wrappers.ValidationError) as e:
-            raise HTTPException(status_code=422, detail=str(e))
+            raise HTTPException(status_code=422, detail=str(e)) from e
         except FastFlowException as e:
-            raise HTTPException(status_code=500, detail=str(e))
+            raise HTTPException(status_code=500, detail=str(e)) from e
 
     return wrapper

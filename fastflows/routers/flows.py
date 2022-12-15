@@ -24,28 +24,26 @@ async def create_flow_deployment(
 @handle_rest_errors
 async def init_flow_run(
     flow_id: str,
-    flow_run_input: typing.Optional[
-        flow_run_schemas.FlowRunInput
-    ] = flow_run_schemas.FlowRunInput(),
+    flow_run_input: typing.Optional[flow_run_schemas.FlowRunInput] = None,
 ) -> flow_schemas.Flow:
     """
     :param flow_id: Flow id in Prefect to run
     """
-    return flow_ops.run_flow(flow_id, by_id=True, flow_run_input=flow_run_input)
+    input_ = flow_run_input or flow_run_schemas.FlowRunInput()
+    return flow_ops.run_flow(flow_id, by_id=True, flow_run_input=input_)
 
 
 @router.post("/name/{flow_name}")
 @handle_rest_errors
 async def init_flow_run_by_name(
     flow_name: str,
-    flow_run_input: typing.Optional[
-        flow_run_schemas.FlowRunInput
-    ] = flow_run_schemas.FlowRunInput(),
+    flow_run_input: typing.Optional[flow_run_schemas.FlowRunInput] = None,
 ) -> flow_schemas.Flow:
     """
     :param flow_name: Flow name in Prefect to run
     """
-    return flow_ops.run_flow(flow_name, by_id=False, flow_run_input=flow_run_input)
+    input_ = flow_run_input or flow_run_schemas.FlowRunInput()
+    return flow_ops.run_flow(flow_name, by_id=False, flow_run_input=input_)
 
 
 @router.get("")

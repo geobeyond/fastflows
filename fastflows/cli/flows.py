@@ -26,13 +26,13 @@ params_doc_string = 'Can be passed as a comma separated string like \'key1=value
 @flows_app.command(help="Run flow by Name or Id")
 def run(
     flow_name: str,
-    flow_id: bool = typer.Option(False, help="run by flow_id"),
-    state: str = typer.Option(
+    flow_id: bool = typer.Option(False, help="run by flow_id"),  # noqa
+    state: str = typer.Option(  # noqa
         "SCHEDULED",
         callback=lambda v: v.upper(),
         help="State to set for new flow run - by default 'Scheduled' (mean that Flow will be runned imidiatly)",
     ),
-    params: typing.Optional[str] = typer.Option(
+    params: typing.Optional[str] = typer.Option(  # noqa
         None,
         callback=utils.process_params_from_str,
         help=f"Parameters to pass to Flow Id. {params_doc_string}",
@@ -60,30 +60,32 @@ def list(flow_path: typing.Optional[Path] = settings.FLOWS_HOME):
 @flows_app.command()
 @utils.catch_exceptions
 def deploy(
-    flows_home_path: Path = typer.Argument(
+    flows_home_path: Path = typer.Argument(  # noqa
         settings.FLOWS_HOME, callback=check_path_is_dir
     ),
-    flow_name: typing.Optional[str] = typer.Option(None, help="Flow name to deploy"),
-    flow_path: typing.Optional[Path] = typer.Option(
+    flow_name: typing.Optional[str] = typer.Option(  # noqa
+        None, help="Flow name to deploy"
+    ),
+    flow_path: typing.Optional[Path] = typer.Option(  # noqa
         None, help="Flow path to deploy", callback=check_path_exists
     ),
-    schedule: typing.Optional[str] = typer.Option(
+    schedule: typing.Optional[str] = typer.Option(  # noqa
         None,
         callback=parse_data.parse_schedule_line,
         help="""Schedule that should be used in the Deployment. If it will be used without `flow_path` or `flow_name` options
         this mean that ALL flows from path will be deployed with that schedule.
         Example of schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC""",
     ),
-    active: typing.Optional[bool] = typer.Option(
+    active: typing.Optional[bool] = typer.Option(  # noqa
         True, help="Activate flow after deploy"
     ),
-    tags: typing.Optional[typing.List[str]] = typer.Option(
+    tags: typing.Optional[typing.List[str]] = typer.Option(  # noqa
         None, callback=parse_data.parse_tags_line, help="Tags for deployment"
     ),
-    params: typing.Optional[str] = typer.Option(
+    params: typing.Optional[str] = typer.Option(  # noqa
         None, help=f"Parameters for deployment. {params_doc_string}"
     ),
-    force: bool = typer.Option(False, help="Force re-deploy all flows"),
+    force: bool = typer.Option(False, help="Force re-deploy all flows"),  # noqa
 ):
     """Register flows in FastFlows & Prefect server"""
 

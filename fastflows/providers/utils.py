@@ -39,7 +39,7 @@ def api_response_handler(
             except httpx.ConnectError as e:
                 raise fastflows.errors.FastFlowException(
                     f"Problems with resolving Prefect host: {str(e)}."
-                )
+                ) from e
             status_code_check = str(response.status_code).startswith
             if status_code_check("2"):
                 response = response.json()

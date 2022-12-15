@@ -179,7 +179,7 @@ class Catalog(metaclass=Singleton):
                 logging.info(f"Flow without any deployment: {_flow_data['name']}")
 
     def register_and_deploy(
-        self, flow_input: typing.Optional[FlowDeployInput] = FlowDeployInput()
+        self, flow_input: typing.Optional[FlowDeployInput] = None
     ) -> typing.List[Flow]:
         """
         flow_name - name of the Flow to deploy
@@ -195,6 +195,7 @@ class Catalog(metaclass=Singleton):
 
         flows_updated = False
 
+        flow_input = flow_input if flow_input is not None else FlowDeployInput()
         flows_in_folder = self._get_flows_from_path(flow_input)
 
         if flow_input.name:

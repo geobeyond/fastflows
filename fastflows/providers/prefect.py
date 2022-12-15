@@ -8,7 +8,10 @@ import httpx
 
 from .base import BaseProvider
 from .utils import api_response_handler
-from ..config import settings
+from ..config import (
+    settings,
+    PrefectStorageBlockType,
+)
 from ..schemas.prefect.block import (
     BlockDocumentInput,
     BlockDocumentResponse,
@@ -152,10 +155,10 @@ class Blocks:
         message="Problem with reading Block Document by name",
     )
     def read_block_document_by_name(
-        self, document_name: str, slug: str = str(settings.PREFECT.STORAGE.BLOCK_TYPE)
+        self, document_name: str, block_type: PrefectStorageBlockType
     ) -> BlockDocumentResponse:
         return self.client.get(
-            f"{self.uri}/block_types/slug/{slug}/block_documents/name/{document_name}"
+            f"{self.uri}/block_types/slug/{block_type.value}/block_documents/name/{document_name}"
         )
 
     @api_response_handler(
@@ -209,7 +212,10 @@ class PrefectProvider(BaseProvider, Blocks, Flows, Deployments, FlowRuns, Tasks)
         self.client = httpx.Client(timeout=settings.PREFECT.API_TIMEOUT)
 
     @api_response_handler(
-        message=f"Prefect does not answer on Healthcheck. Looks like Prefect server is unavailable on address {settings.PREFECT.URI}",
+        message=(
+            f"Prefect does not answer on Healthcheck. Looks like Prefect server "
+            f"is unavailable on address {settings.PREFECT.URI}"
+        ),
     )
     def healthcheck(self) -> str:
         response = self.client.get(f"{self.uri}/hello")

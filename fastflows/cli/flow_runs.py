@@ -22,7 +22,7 @@ flow_runs = typer.Typer()
 @catch_exceptions
 def list_flow_runs(
     flow_name: str,
-    flow_id: bool = typer.Option(False, help="List by flow_id"),
+    flow_id: bool = typer.Option(False, help="List by flow_id"),  # noqa
 ):
     typer.echo(
         f"Get list flow runs for flow {'with name' if not flow_id else 'with id'}: {flow_name}"
@@ -35,7 +35,7 @@ def list_flow_runs(
 @catch_exceptions
 def flow_run_state(
     flow_run_id: str,
-    graph: bool = typer.Option(False, help="Get graph for flow_run_id"),
+    graph: bool = typer.Option(False, help="Get graph for flow_run_id"),  # noqa
 ):
     if graph:
         message = "Get graph for flow_run_id"
@@ -60,7 +60,7 @@ def cancel_flow_run(flow_run_id: str):
 @catch_exceptions
 def update_flow_run(
     flow_run_id: str,
-    state: str = typer.Option(
+    state: str = typer.Option(  # noqa
         None,
         callback=lambda v: v.upper() if v else None,
         help="State to set for new flow run - by default 'Scheduled' (mean will be runned imidiatly)",

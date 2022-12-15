@@ -34,7 +34,9 @@ def get_or_create_block_document(postfix: str) -> str:
     block_name = get_block_name(postfix)
 
     try:
-        document_block_id = provider.read_block_document_by_name(block_name).id
+        document_block_id = provider.read_block_document_by_name(
+            block_name, block_type=settings.PREFECT.STORAGE.BLOCK_TYPE
+        ).id
     except FastFlowException as e:
         if "404" in str(e):
             document_block_id = create_storage_block_document(postfix)
