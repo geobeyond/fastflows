@@ -1,4 +1,4 @@
-""" flows command """
+"""flows command"""
 import typing
 from pathlib import Path
 
@@ -88,7 +88,6 @@ def deploy(
     force: bool = typer.Option(False, help="Force re-deploy all flows"),  # noqa
 ):
     """Register flows in FastFlows & Prefect server"""
-
     if not flow_path:
         sub_message = f"from directory: {flows_home_path.as_posix()}"
     else:

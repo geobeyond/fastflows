@@ -76,14 +76,13 @@ class Deployments:
         message="Error while deleting deployment by_id",
     )
     def deploy_flow(self, deployment: DeploymentSpec) -> DeploymentResponse:
-        """
+        """Deploy flow.
+
+        :param deployment: Deployment configuration
+
         call deployment API:
             https://orion-docs.prefect.io/api-ref/rest-api/#/Deployments/create_deployment_deployments__post
-
-            :param deployment: Deployment configuration
-
         """
-
         response = self.client.post(
             f"{self.uri}/deployments/", json=deployment.dict(exclude={"flow_data"})
         )
@@ -145,7 +144,6 @@ class Tasks:
     )
     def get_task_run(self, task_run_id: str) -> None:
         """https://orion-docs.prefect.io/api-ref/rest-api/#/Task%20Runs/read_task_run_task_runs__id__get"""
-
         response = self.client.post(f"{self.uri}/task_runs/{task_run_id}/")
         return response
 

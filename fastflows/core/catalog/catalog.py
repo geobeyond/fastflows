@@ -82,7 +82,7 @@ class Catalog(metaclass=Singleton):
 
         if not flow_file.is_flows:
             # file exists, but there is no flow inside
-            raise errors.FlowNotFound("Flow was not found in provided data")
+            raise errors.FlowNotFoundError("Flow was not found in provided data")
 
         return flow_file.flows
 
@@ -94,13 +94,13 @@ class Catalog(metaclass=Singleton):
 
         if not flow_path.exists():
             # file does not exist
-            raise errors.FlowNotFound(f"Flow path '{flow_path}' does not exist'")
+            raise errors.FlowNotFoundError(f"Flow path '{flow_path}' does not exist'")
 
         flow_file = FlowFileReader(file_path=flow_path)
 
         if not flow_file.is_flows:
             # file exists, but there is no flow inside
-            raise errors.FlowNotFound(
+            raise errors.FlowNotFoundError(
                 f"Flow was not found in file with path '{flow_path}''"
             )
 
@@ -135,7 +135,7 @@ class Catalog(metaclass=Singleton):
                     f"Flow with name '{flow_name}' was not found in path '{flows_path}'"
                 )
 
-            raise errors.FlowNotFound(err_message)
+            raise errors.FlowNotFoundError(err_message)
         return flows_in_folder
 
     def _clean_up_catalog_cache(
@@ -181,12 +181,12 @@ class Catalog(metaclass=Singleton):
     def register_and_deploy(
         self, flow_input: typing.Optional[FlowDeployInput] = None
     ) -> typing.List[Flow]:
-        """
+        """Register and deploy flow.
+
         flow_name - name of the Flow to deploy
         flow_path - path to the Flow to deploy
 
         if no flow_name & no flow_path - deploy all flows from the folder
-
         """
         logging.info("Checking for new flows or updates")
 
@@ -310,7 +310,6 @@ class Catalog(metaclass=Singleton):
 
     def process_flows_folder(self) -> typing.List[FlowDataFromFile]:
         """list flows from FLOWS_HOME without register them or load them to Prefect if 'register' True"""
-
         flows_in_storage = self._get_storage().list()
 
         flows_in_folder = []

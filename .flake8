@@ -34,8 +34,20 @@ ignore =
     D100
     # missing docstring in public class
     D101,
+    # missing docstring in public methods
+    D102,
     # missing docstring in public function
     D103,
+    # Missing docstring in __init__
+    D104,
+    # Missing docstring in public nested class
+    D106,
+    # Missing docstring in public package
+    D107,
+    # First word of first line should be capitalized
+    D403,
+    # First line of docstring should end with period, ? or !
+    D415,
     # docstring missing a parameter
     DAR101,
     # docstirng missing a return

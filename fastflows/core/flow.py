@@ -19,11 +19,11 @@ def get_flow_id(flow_name: str, by_id: bool):
 
 
 def get_flow_by_name(flow_name: str) -> flow_schemas.Flow:
-    """
-        get flow from Catalog, if flow does not exist - try to re-register
-    flows & try one more time
-    """
+    """Retrieve flow by name.
 
+    get flow from Catalog, if flow does not exist - try to re-register flows & try one
+    more time
+    """
     flow = catalog_module.catalog.get(flow_name)
 
     if not flow:
@@ -36,7 +36,7 @@ def register_flow_and_check(flow_id: str, catalog_: dict) -> flow_schemas.Flow:
     catalog_module.Catalog().register_and_deploy()
     flow = catalog_.get(flow_id)
     if not flow:
-        raise errors.FlowNotFound(
+        raise errors.FlowNotFoundError(
             f"Flow was not found in Catalog. Available flows {list(catalog_.keys())}"
         )
     return flow
@@ -62,7 +62,7 @@ def run_flow(
         )
     else:
         err_message = f"Flow with {'ID' if by_id else 'name'} {flow_name} was not found"
-        raise errors.FlowNotFound(err_message)
+        raise errors.FlowNotFoundError(err_message)
 
 
 def get_flow_runs_list(

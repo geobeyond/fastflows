@@ -54,8 +54,10 @@ def process_params_from_str(params: Optional[str]) -> dict:
 
 
 def catch_exceptions(func):
-    """decorator to remove traceback in command line & convert output to red beutiful error message,
-    to disable option & see traceback: set env FASTFLOW_DEBUG = 1
+    """Catch exception decorator.
+
+    Decorator to remove traceback in command line & convert output to red beutiful
+    error message, to disable option & see traceback: set env FASTFLOW_DEBUG = 1
     """
 
     @wraps(func)

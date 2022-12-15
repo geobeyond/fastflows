@@ -9,7 +9,8 @@ router = APIRouter(prefix="/task-runs", tags=["task-runs"])
 @router.patch("/{task_id}", response_model=TaskRunState)
 @handle_rest_errors
 async def update_task_run_state_route(task_run_id: str):
-    """
+    """Update task run state.
+
     :param flow_run_id: Flow Run Id in Prefect
     :param task_id: Task Id to update
 

@@ -1,4 +1,4 @@
-from fastflows.errors import FastFlowException
+from fastflows.errors import FastFlowsError
 from fastflows.schemas.prefect.flow_data import Schedule
 import pydantic
 from typing import List, Optional
@@ -15,7 +15,7 @@ def parse_schedule_line(line: Optional[str]) -> Optional[Schedule]:
         try:
             return Schedule(**schedule_data)
         except pydantic.error_wrappers.ValidationError as err:
-            raise FastFlowException(
+            raise FastFlowsError(
                 "Wrong schedule format."
                 "Schedule in Flow File should be defined as comment line with interval "
                 "& anchor_date & timezone Example: "
