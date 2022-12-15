@@ -37,9 +37,9 @@ def api_response_handler(
             try:
                 response = func(*args, **kwargs)
             except httpx.ConnectError as e:
-                raise fastflows.errors.FastFlowException(
+                raise fastflows.errors.FastFlowsError(
                     f"Problems with resolving Prefect host: {str(e)}."
-                )
+                ) from e
             status_code_check = str(response.status_code).startswith
             if status_code_check("2"):
                 response = response.json()
@@ -56,7 +56,7 @@ def api_response_handler(
             else:
                 if response.status_code == 422:
                     raise errors.ApiValidationError(response.json())
-                raise fastflows.errors.FastFlowException(
+                raise fastflows.errors.FastFlowsError(
                     f"Error API response: {response.text}. Status code: {response.status_code}"
                 )
 

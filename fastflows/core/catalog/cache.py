@@ -30,8 +30,10 @@ class CatalogCache:
                 if len(line) > 1:
                     flows_data_list.append(line[0])
                     flows_data_list.append(json.loads(line[1]))
-
-            self.data = dict(zip(flows_data_list[0::2], flows_data_list[1::2]))
+            self.data = {
+                flows_data_list[i]: flows_data_list[i + 1]
+                for i in range(0, len(flows_data_list), 2)
+            }
         return self.data
 
     def write(self, catalog_data: dict) -> None:

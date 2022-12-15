@@ -6,7 +6,7 @@ class BaseProvider(metaclass=Singleton):
     type: str = "base"
     uri: str = "provider/api/uri"
 
-    def healthcheck():
+    def healthcheck(self):
         raise NotImplementedError(
             "Healthcheck method should be implemented for each provider"
         )

@@ -22,16 +22,17 @@ def process_params_input_as_a_comma_separated_string(params: str) -> dict:
 
 def process_params_as_a_string_with_dict(params) -> dict:
     try:
-        # if it was n't json - try eval
+        # if it wasn't json - try eval
         return json.loads(params)
     except ValueError:
         pass
     try:
         return literal_eval(params)
-    except ValueError:
+    except ValueError as err:
         raise ValueError(
-            f'Invalid format of parameters. Possible you forget quotes near names. Should be like in example: \'{{"a": "b"}}\'. You pass: {params}'
-        )
+            f"Invalid format of parameters. Possible you forget quotes near names. "
+            f'Should be like in example: \'{{"a": "b"}}\'. You pass: {params}'
+        ) from err
 
 
 def process_params_from_str(params: Optional[str]) -> dict:
@@ -53,8 +54,10 @@ def process_params_from_str(params: Optional[str]) -> dict:
 
 
 def catch_exceptions(func):
-    """decorator to remove traceback in command line & convert output to red beutiful error message,
-    to disable option & see traceback: set env FASTFLOW_DEBUG = 1
+    """Catch exception decorator.
+
+    Decorator to remove traceback in command line & convert output to red beutiful
+    error message, to disable option & see traceback: set env FASTFLOW_DEBUG = 1
     """
 
     @wraps(func)

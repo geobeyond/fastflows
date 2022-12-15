@@ -63,13 +63,13 @@ class _LoggingSettings(pydantic.BaseModel):
         "[id:{extra[request_id]}] - <level>{message}</level>"
     )
     LEVEL: str = "INFO"
-    PATH: Path = Path("/tmp")
+    PATH: Path = Path("/tmp")  # noqa
     RETENTION: str = "1 months"
     ROTATION: str = "1 days"
 
 
 class _UvicornSettings(pydantic.BaseModel):
-    HOST: str = "0.0.0.0"
+    HOST: str = "0.0.0.0"  # noqa
     PORT: int = 5010
     RELOAD: bool = False
     ACCESS_LOG: bool = False
@@ -80,7 +80,7 @@ class _AuthSettings(pydantic.BaseModel):
     # for test purposes values taken from tests in official repo:
     # https://github.com/busykoala/fastapi-opa/blob/a456f4e6f8f6cb90ca386bbcd5909af3ea44d646/tests/utils.py#L63
     OPA_URL: Optional[str] = ""
-    OPA_HOST: Optional[str] = "0.0.0.0"
+    OPA_HOST: Optional[str] = "0.0.0.0"  # noqa
     OIDC_WELL_KNOWN_ENDPOINT: Optional[str] = "0.0.0.0/.well-known/openid-configuration"
     OIDC_CLIENT_ID: Optional[str] = "example-client"
     OIDC_CLIENT_SECRET: Optional[str] = "secret"

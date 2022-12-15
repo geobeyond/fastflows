@@ -1,4 +1,4 @@
-from fastflows.errors import FastFlowException
+from fastflows.errors import FastFlowsError
 from fastflows.schemas.prefect.flow_data import Schedule
 import pydantic
 from typing import List, Optional
@@ -14,12 +14,13 @@ def parse_schedule_line(line: Optional[str]) -> Optional[Schedule]:
                 schedule_data[item[0]] = item[1]
         try:
             return Schedule(**schedule_data)
-        except pydantic.error_wrappers.ValidationError:
-            raise FastFlowException(
+        except pydantic.error_wrappers.ValidationError as err:
+            raise FastFlowsError(
                 "Wrong schedule format."
-                "Schedule in Flow File should be defined as comment line with interval & anchor_date & timezone"
-                "Example: `# schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC`"
-            )
+                "Schedule in Flow File should be defined as comment line with interval "
+                "& anchor_date & timezone Example: "
+                "`# schedule: interval=3600,anchor_date=2020-01-01T00:00:00Z,timezone=UTC`"
+            ) from err
 
 
 def parse_tags_line(line: Optional[str]) -> List[str]:

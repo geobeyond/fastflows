@@ -2,7 +2,7 @@ class Singleton(type):
     # singleton implementation for Catalog and Providers
     _instance = {}
 
-    def __call__(self, *args, **kwargs):
-        if self not in self._instance:
-            self._instance[self] = super().__call__(*args, **kwargs)
-        return self._instance[self]
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instance:
+            cls._instance[cls] = super().__call__(*args, **kwargs)
+        return cls._instance[cls]

@@ -3,7 +3,7 @@ from uuid import uuid1
 from slugify import slugify
 
 from ..config import settings
-from ..errors import FastFlowException
+from ..errors import FastFlowsError
 from ..providers import provider
 from ..schemas.prefect.block import (
     BlockDocumentInput,
@@ -30,12 +30,13 @@ def get_block_name(postfix: str) -> str:
 
 def get_or_create_block_document(postfix: str) -> str:
     """postfix: can be a flow-name or any other string used as a additional to storage basepath"""
-
     block_name = get_block_name(postfix)
 
     try:
-        document_block_id = provider.read_block_document_by_name(block_name).id
-    except FastFlowException as e:
+        document_block_id = provider.read_block_document_by_name(
+            block_name, block_type=settings.PREFECT.STORAGE.BLOCK_TYPE
+        ).id
+    except FastFlowsError as e:
         if "404" in str(e):
             document_block_id = create_storage_block_document(postfix)
     return str(document_block_id)

@@ -90,17 +90,8 @@ def precommit(session: NoxPoetrySession) -> None:
     """Lint using pre-commit."""
     args = session.posargs or ["run", "--all-files", "--show-diff-on-failure"]
     session.install(
-        "black",
-        # "darglint",
-        "flake8",
-        # "flake8-bandit",
-        # "flake8-bugbear",
-        # "flake8-docstrings",
-        # "flake8-rst-docstrings",
-        # "pep8-naming",
         "pre-commit",
         "pre-commit-hooks",
-        # "pyupgrade",
         # "reorder-python-imports",
     )
     session.run("pre-commit", "clean")

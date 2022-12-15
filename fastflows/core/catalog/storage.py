@@ -5,12 +5,12 @@ class FlowsStorageBase:
     def __init__(self, storage_path: str) -> None:
         self.storage_path = storage_path
 
-    def list():
+    def list(self):
         raise NotImplementedError(
             "Flows Storage should implement list method to get all files in flows path directory."
         )
 
-    def read():
+    def read(self):
         raise NotImplementedError(
             "Flows Storage should implement read method to get flow file content"
         )

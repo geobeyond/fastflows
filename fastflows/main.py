@@ -13,7 +13,7 @@ from starlette.middleware.cors import CORSMiddleware
 from . import middleware
 from .config import settings
 from .core import catalog
-from .errors import FastFlowException
+from .errors import FastFlowsError
 from .providers import provider
 from .routers.flows import router as flows_router
 from .routers.flow_runs import router as flow_runs_router
@@ -80,7 +80,7 @@ def register_flows_task():
         logger.info(f"Register Flows in {provider.type.capitalize()} provider")
         try:
             catalog.Catalog().register_and_deploy()
-        except FastFlowException:
+        except FastFlowsError:
             # error during connection to DB, maybe problem at the prefect start
             # let's wait & try one more time
             sleep(10)

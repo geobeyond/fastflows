@@ -6,7 +6,7 @@ import random
 @task
 def get_data():
     sleep(60)
-    return random.randint(0, 100)
+    return random.randint(0, 100)  # noqa
 
 
 @flow(name="Simple Flow2")

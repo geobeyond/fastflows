@@ -8,7 +8,10 @@ import httpx
 
 from .base import BaseProvider
 from .utils import api_response_handler
-from ..config import settings
+from ..config import (
+    settings,
+    PrefectStorageBlockType,
+)
 from ..schemas.prefect.block import (
     BlockDocumentInput,
     BlockDocumentResponse,
@@ -73,14 +76,13 @@ class Deployments:
         message="Error while deleting deployment by_id",
     )
     def deploy_flow(self, deployment: DeploymentSpec) -> DeploymentResponse:
-        """
+        """Deploy flow.
+
+        :param deployment: Deployment configuration
+
         call deployment API:
             https://orion-docs.prefect.io/api-ref/rest-api/#/Deployments/create_deployment_deployments__post
-
-            :param deployment: Deployment configuration
-
         """
-
         response = self.client.post(
             f"{self.uri}/deployments/", json=deployment.dict(exclude={"flow_data"})
         )
@@ -142,7 +144,6 @@ class Tasks:
     )
     def get_task_run(self, task_run_id: str) -> None:
         """https://orion-docs.prefect.io/api-ref/rest-api/#/Task%20Runs/read_task_run_task_runs__id__get"""
-
         response = self.client.post(f"{self.uri}/task_runs/{task_run_id}/")
         return response
 
@@ -152,10 +153,10 @@ class Blocks:
         message="Problem with reading Block Document by name",
     )
     def read_block_document_by_name(
-        self, document_name: str, slug: str = str(settings.PREFECT.STORAGE.BLOCK_TYPE)
+        self, document_name: str, block_type: PrefectStorageBlockType
     ) -> BlockDocumentResponse:
         return self.client.get(
-            f"{self.uri}/block_types/slug/{slug}/block_documents/name/{document_name}"
+            f"{self.uri}/block_types/slug/{block_type.value}/block_documents/name/{document_name}"
         )
 
     @api_response_handler(
@@ -209,7 +210,10 @@ class PrefectProvider(BaseProvider, Blocks, Flows, Deployments, FlowRuns, Tasks)
         self.client = httpx.Client(timeout=settings.PREFECT.API_TIMEOUT)
 
     @api_response_handler(
-        message=f"Prefect does not answer on Healthcheck. Looks like Prefect server is unavailable on address {settings.PREFECT.URI}",
+        message=(
+            f"Prefect does not answer on Healthcheck. Looks like Prefect server "
+            f"is unavailable on address {settings.PREFECT.URI}"
+        ),
     )
     def healthcheck(self) -> str:
         response = self.client.get(f"{self.uri}/hello")
