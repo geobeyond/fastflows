@@ -6,17 +6,15 @@ repos:
       - id: check-added-large-files
       - id: check-toml
       - id: end-of-file-fixer
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
   - repo: local
     hooks:
       - id: black
         name: black
         entry: black
-        language: system
-        types: [python]
-        require_serial: true
-      - id: flake8
-        name: flake8
-        entry: flake8
         language: system
         types: [python]
         require_serial: true

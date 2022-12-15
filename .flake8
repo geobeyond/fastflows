@@ -1,11 +1,61 @@
 [flake8]
-select = B,B9,C,D,DAR,E,F,N,RST,S,W
+
+# Feeling lost? These codes come from a variety of flake8 and plugins:
+# B - bugbear
+# C - either flake8-coding or flake8-commas or flake8-comprehensions
+# D - flake8-docstrings, which is a flake8 plugin
+# DAR - darglint
+# E - mostly from pycodestyle, with E999 coming from flake8 instead
+# F - pyflakes, but written by flake8 (look for their meaning in flake8 docs)
+# N - flake8-naming
+# RST - flak8-rst-docstrings
+# S - bandit
+# W - pycodestyle
+#
+# For more of them, look at
+# https://flakes.orsinium.dev/
+# https://github.com/DmytroLitvinov/awesome-flake8-extensions
+
+select =
+    B,
+    B9,
+    C,
+    D,
+    DAR,
+    E,
+    F,
+    N,
+    RST,
+    S,
+    W
 # temporary ignore those codes
-ignore = E203,E501,RST201,RST203,RST301,DAR101,D103,DAR201,W503,D101,D100
+ignore =
+    # missing docstring in public module
+    D100
+    # missing docstring in public class
+    D101,
+    # missing docstring in public function
+    D103,
+    # docstring missing a parameter
+    DAR101,
+    # docstirng missing a return
+    DAR201,
+    # line too long
+    E501,
+    # block quote ends without blank line
+    RST201,
+    # definition list ends without blank line
+    RST203,
+    # unexpected indentation
+    RST301,
+    # line break before binary operator
+    W503,
 max-line-length = 120
 max-complexity = 10
 docstring-convention = google
-per-file-ignores = tests/*:S101
+per-file-ignores =
+    # assert used (comes from bandit)
+    tests/*:S101
 exclude=
     .nox/
     .venv/
@@ -13,5 +63,11 @@ exclude=
     .dist/
     docker/
     __pycache__/
-rst-roles = class,const,func,meth,mod,ref
+rst-roles =
+    class,
+    const,
+    func,
+    meth,
+    mod,
+    ref
 rst-directives = deprecated
