@@ -31,7 +31,7 @@ pytestmark = pytest.mark.unit
 def test_define_config_no_env_name(env_key, env_value, setting_key, expected):
     with mock.patch.dict("os.environ", {env_key: env_value}, clear=True):
         settings = config.FastFlowsSettings()  # noqa
-        got = eval(f"settings.{setting_key}")
+        got = eval(f"settings.{setting_key}")  # noqa
         assert got == expected
 
 
@@ -79,5 +79,5 @@ def test_define_config_based_env_name(
         # is executed at import time
         importlib.reload(config)
         settings = config.FastFlowsSettings()  # noqa
-        got = eval(f"settings.{setting_key}")
+        got = eval(f"settings.{setting_key}")  # noqa
         assert got == expected

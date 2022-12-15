@@ -44,6 +44,7 @@ fastflows = "fastflows.cli.main:app"
 
 [tool.poetry.group.dev.dependencies]
 safety = "^2.3.3"
+flake8-bandit = "^4.1.1"
 
 [tool.poetry.group.interactive-dev]
 optional = true

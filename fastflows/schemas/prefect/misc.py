@@ -17,7 +17,7 @@ class Schedule(BaseModel):
 
 
 def get_hash_from_data(data: str) -> str:
-    return hashlib.md5(data.encode()).hexdigest()
+    return hashlib.md5(data.encode(), usedforsecurity=False).hexdigest()
 
 
 class Status(str, Enum):
