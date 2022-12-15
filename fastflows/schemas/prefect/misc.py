@@ -17,7 +17,10 @@ class Schedule(BaseModel):
 
 
 def get_hash_from_data(data: str) -> str:
-    return hashlib.md5(data.encode(), usedforsecurity=False).hexdigest()
+    # The following line is being marked with noqa because
+    # 'Consider usedforsecurity=False' not being used because it does not exist
+    # in Python 3.8
+    return hashlib.md5(data.encode()).hexdigest()  # noqa: S324
 
 
 class Status(str, Enum):
